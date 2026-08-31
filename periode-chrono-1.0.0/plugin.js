@@ -1,6 +1,6 @@
 /**
- * Periods Manager Plugin - plugin.js
- * Timer interception, UI registration, and SP action forwarding.
+ * Période + Chrono — host bridge
+ * Forwards SP actions into the iframe and keeps Periods timer interception.
  */
 
 function dayIndex(d) {
@@ -12,13 +12,20 @@ function parseTime(str) {
   return parseInt(parts[0], 10) * 60 + parseInt(parts[1], 10);
 }
 
+function unwrapPeriods(parsed) {
+  if (!parsed) return { timetables: {}, dailyOverrides: {}, activeTimetableId: null, syncLog: [] };
+  if (parsed._unified) parsed = parsed.periods || {};
+  return parsed;
+}
+
 async function loadData() {
   try {
     var raw = await PluginAPI.loadSyncedData();
-    if (raw) return JSON.parse(raw);
-  } catch (e) {
-    // ignore
-  }
+    if (raw) {
+      var parsed = typeof raw === 'string' ? JSON.parse(raw) : raw;
+      return unwrapPeriods(parsed);
+    }
+  } catch (e) {}
   return { timetables: {}, dailyOverrides: {}, activeTimetableId: null, syncLog: [] };
 }
 
@@ -56,8 +63,28 @@ function findCurrentPeriod(periods, now) {
   return null;
 }
 
+function postToIframe(payload) {
+  var iframes = document.querySelectorAll('iframe');
+  iframes.forEach(function (iframe) {
+    var src = iframe.getAttribute('src') || '';
+    if (
+      src.indexOf('periode-chrono') !== -1 ||
+      src.indexOf('periods-manager') !== -1 ||
+      src.indexOf('chrono') !== -1 ||
+      src.indexOf('blob:') === 0 ||
+      iframe.hasAttribute('srcdoc')
+    ) {
+      try {
+        iframe.contentWindow.postMessage(payload, '*');
+      } catch (e) {}
+    }
+  });
+}
+
+var lastCurrentTaskId = null;
+
 PluginAPI.registerHeaderButton({
-  label: 'Periods',
+  label: 'Période',
   icon: 'schedule',
   onClick: function () {
     PluginAPI.showIndexHtmlAsView();
@@ -65,23 +92,25 @@ PluginAPI.registerHeaderButton({
 });
 
 PluginAPI.registerShortcut({
-  id: 'show_periods',
-  label: 'Show Periods Manager',
+  id: 'show_periode_chrono',
+  label: 'Show Période / Chrono',
   onExec: function () {
     PluginAPI.showIndexHtmlAsView();
   },
 });
 
-PluginAPI.registerHook(PluginAPI.Hooks.ACTION, async function (payload) {
-  var iframes = document.querySelectorAll('iframe');
-  iframes.forEach(function (iframe) {
-    if (iframe.src && iframe.src.includes('periods-manager')) {
-      iframe.contentWindow.postMessage({ type: 'SP_ACTION', action: payload.action }, '*');
-    }
-  });
+PluginAPI.registerHook(PluginAPI.Hooks.CURRENT_TASK_CHANGE, function (payload) {
+  var task = payload && (payload.current || payload.task || payload);
+  lastCurrentTaskId = task && task.id ? task.id : null;
+  postToIframe({ type: 'SP_CURRENT_TASK', task: lastCurrentTaskId ? { id: lastCurrentTaskId } : null });
+});
 
-  if (!payload || !payload.action) return;
-  if (payload.action.type !== '[Task] Toggle start') return;
+PluginAPI.registerHook(PluginAPI.Hooks.ACTION, async function (payload) {
+  var action = payload && payload.action ? payload.action : payload;
+  postToIframe({ type: 'SP_ACTION', action: action });
+
+  if (!action || action.type !== '[Task] Toggle start') return;
+  if (lastCurrentTaskId) return;
 
   try {
     var data = await loadData();
@@ -102,6 +131,7 @@ PluginAPI.registerHook(PluginAPI.Hooks.ACTION, async function (payload) {
     var targetTaskId = null;
     for (var j = 0; j < currentPeriod.taskIds.length; j++) {
       var tid = currentPeriod.taskIds[j];
+      if (String(tid).indexOf('custom_') === 0) continue;
       var t = tasksMap[tid];
       if (t && !t.isDone) {
         targetTaskId = tid;
@@ -115,7 +145,5 @@ PluginAPI.registerHook(PluginAPI.Hooks.ACTION, async function (payload) {
         id: targetTaskId,
       });
     }
-  } catch (e) {
-    // Silently fail — don't break the timer
-  }
+  } catch (e) {}
 });
