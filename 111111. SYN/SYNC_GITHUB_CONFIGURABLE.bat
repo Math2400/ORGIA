@@ -89,11 +89,12 @@ if not "%EXEC_TYPE%"=="1" if not "%EXEC_TYPE%"=="2" (
     exit /b 1
 )
 
+echo.
+echo ====================================================================
+
 REM === CONFIGURER LA FREQUENCE SI MODE PERPETUEL ===
 set SYNC_INTERVAL=60
 if "%EXEC_TYPE%"=="2" (
-    echo.
-    echo ====================================================================
     echo [ETAPE 5/5] Frequence de synchronisation (mode perpetuel)
     echo.
     echo Combien de secondes attendre entre chaque synchronisation ?
@@ -112,9 +113,6 @@ if "%EXEC_TYPE%"=="2" (
         pause
         exit /b 1
     )
-) else (
-    echo.
-    echo [ETAPE 5/5] Configuration terminee (mode unique)
 )
 
 echo.
