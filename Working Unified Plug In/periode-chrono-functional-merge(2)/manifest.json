@@ -1,16 +1,15 @@
 {
-  "id": "periode-chrono",
+  "id": "periode-chrono-1.0.0",
   "name": "Période + Chrono",
   "manifestVersion": 1,
   "version": "1.0.0",
   "minSupVersion": "14.0.0",
-  "description": "Periods Manager and Chrono in one plugin, with a Daily View button to load a period into the timer.",
-  "author": "Custom",
-  "icon": "icon.svg",
-  "iFrame": true,
-  "sidePanel": true,
-  "type": "standard",
-  "hooks": ["action", "currentTaskChange"],
+  "description": "Planification par périodes et chronomètre de tâches.",
+  "hooks": [
+    "action",
+    "currentTaskChange",
+    "persistedDataChanged"
+  ],
   "permissions": [
     "getTasks",
     "updateTask",
@@ -22,5 +21,10 @@
     "persistDataSynced",
     "loadSyncedData",
     "dispatchAction"
-  ]
+  ],
+  "iFrame": true,
+  "sidePanel": true,
+  "type": "standard",
+  "assets": [],
+  "icon": "icon.svg"
 }

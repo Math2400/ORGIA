@@ -1,0 +1,1419 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<title>Chrono Pro</title>
+<style>
+/* ── Premium Aesthetics & Variables ────────────────────────────────────── */
+:root {
+  --primary: #89b4fa;
+  --primary-glow: rgba(137, 180, 250, 0.3);
+  --danger: #f38ba8;
+  --warning: #f9e2af;
+  --success: #a6e3a1;
+  --bg: #1e1e2e;
+  --card-bg: rgba(49, 50, 68, 0.7);
+  --text: #cdd6f4;
+  --text-dim: #a6adc8;
+  --divider: #45475a;
+  --font-main: 'Inter', system-ui, sans-serif;
+  --font-display: 'Outfit', sans-serif;
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  font-family: var(--font-main);
+  background: var(--bg);
+  color: var(--text);
+  padding: 16px;
+  line-height: 1.5;
+  overflow-x: hidden;
+  min-height: 100vh;
+}
+
+/* Glassmorphism Background */
+.glass-bg {
+  position: fixed;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background: radial-gradient(circle at 50% 0%, #313244 0%, #1e1e2e 100%);
+  z-index: -1;
+}
+
+h1, h2, h3 { font-family: var(--font-display); font-weight: 600; }
+
+/* ── Timer Section ─────────────────────────────────────────────────────── */
+.timer-card {
+  background: var(--card-bg);
+  backdrop-filter: blur(12px);
+  border: 1px solid var(--divider);
+  border-radius: 24px;
+  padding: 24px;
+  text-align: center;
+  box-shadow: 0 8px 32px rgba(0,0,0,0.4);
+  margin-bottom: 24px;
+  position: sticky;
+  top: 0;
+  z-index: 100;
+}
+
+.session-badge {
+  display: inline-block;
+  padding: 4px 12px;
+  background: var(--divider);
+  border-radius: 20px;
+  font-size: 0.75rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  margin-bottom: 8px;
+}
+
+#current-task-name {
+  font-size: 1.4rem;
+  margin-bottom: 8px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.timer-digits {
+  font-size: 4.5rem;
+  font-family: var(--font-display);
+  font-weight: 900;
+  line-height: 1;
+  margin: 12px 0;
+  font-variant-numeric: tabular-nums;
+  text-shadow: 0 0 20px var(--primary-glow);
+  transition: color 0.3s ease;
+}
+
+.timer-digits.warning { color: var(--warning); }
+.timer-digits.danger { color: var(--danger); animation: pulse-danger 1s infinite; }
+
+@keyframes pulse-danger {
+  0% { opacity: 1; }
+  50% { opacity: 0.7; }
+  100% { opacity: 1; }
+}
+
+.progress-container {
+  height: 6px;
+  background: var(--divider);
+  border-radius: 3px;
+  overflow: hidden;
+  margin: 16px 0;
+}
+
+.progress-bar {
+  height: 100%;
+  background: var(--primary);
+  width: 0%;
+  transition: width 1s linear;
+  box-shadow: 0 0 10px var(--primary-glow);
+}
+
+/* ── Controls ──────────────────────────────────────────────────────────── */
+.controls {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 16px;
+  margin-top: 16px;
+}
+
+.btn-ctrl {
+  background: none;
+  border: none;
+  color: var(--text);
+  cursor: pointer;
+  padding: 8px;
+  border-radius: 50%;
+  transition: all 0.2s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.btn-ctrl:hover { background: rgba(255,255,255,0.1); transform: scale(1.1); }
+.btn-ctrl:active { transform: scale(0.95); }
+
+.btn-main {
+  width: 64px;
+  height: 64px;
+  background: var(--primary);
+  color: #1e1e2e;
+  box-shadow: 0 0 20px var(--primary-glow);
+}
+
+.btn-main:hover { background: #b4befe; }
+
+.btn-adj {
+  font-size: 0.8rem;
+  font-weight: 700;
+  padding: 6px 10px;
+  border-radius: 8px;
+  background: var(--divider);
+}
+
+.btn-adj.plus { color: var(--success); }
+.btn-adj.minus { color: var(--danger); }
+
+/* ── Task Management Section ───────────────────────────────────────────── */
+.section-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin: 24px 0 12px;
+}
+
+.sequence-list {
+  min-height: 60px;
+  border: 2px dashed var(--divider);
+  border-radius: 16px;
+  padding: 8px;
+  margin-bottom: 24px;
+  background: rgba(0,0,0,0.1);
+}
+
+.sequence-list.drag-over {
+  border-color: var(--primary);
+  background: var(--primary-glow);
+}
+
+.task-item {
+  background: var(--card-bg);
+  border: 1px solid var(--divider);
+  border-radius: 12px;
+  padding: 12px;
+  margin-bottom: 8px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  cursor: grab;
+  transition: all 0.2s;
+}
+
+.task-item {
+  --step-color: var(--primary);
+}
+.task-item:hover { transform: translateX(4px); border-color: var(--step-color); box-shadow: 0 0 10px color-mix(in srgb, var(--step-color) 35%, transparent); }
+.task-item.active { border-left: 4px solid var(--step-color); background: color-mix(in srgb, var(--step-color) 12%, transparent); }
+.task-item .task-content { cursor: pointer; }
+.task-item.dragging { opacity: 0.5; }
+
+.task-drag-handle {
+  color: var(--text-dim);
+  cursor: grab;
+  padding: 6px 4px;
+  border-radius: 8px;
+  user-select: none;
+  touch-action: manipulation;
+}
+.task-drag-handle:hover { background: rgba(255,255,255,0.06); color: var(--text); }
+.reorder-arrows {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  flex-shrink: 0;
+}
+.btn-reorder {
+  width: 28px;
+  height: 22px;
+  border: 1px solid var(--divider);
+  border-radius: 6px;
+  background: rgba(0,0,0,0.25);
+  color: var(--text);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+}
+.btn-reorder:hover:not(:disabled) { background: var(--primary); color: #1e1e2e; border-color: var(--primary); }
+.btn-reorder:disabled { opacity: 0.28; cursor: not-allowed; }
+
+.task-content { flex: 1; min-width: 0; }
+.task-title { font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; font-size: 0.9rem; }
+.task-duration-label { font-size: 0.75rem; color: var(--text-dim); }
+
+.task-actions { display: flex; gap: 4px; }
+.btn-tiny { background: none; border: none; color: var(--text-dim); cursor: pointer; padding: 4px; border-radius: 4px; }
+.btn-tiny:hover { color: var(--danger); background: rgba(243, 139, 168, 0.1); }
+
+/* ── Source Lists (Copy-paste from Periods Manager logic) ──────────────── */
+.source-lists {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.list-container {
+  background: var(--card-bg);
+  border-radius: 16px;
+  padding: 16px;
+  border: 1px solid var(--divider);
+}
+
+.list-container h3 {
+  font-size: 1rem;
+  margin-bottom: 12px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.task-count-badge {
+  font-size: 0.7rem;
+  padding: 2px 8px;
+  background: var(--divider);
+  border-radius: 10px;
+  color: var(--text-dim);
+}
+
+.search-box {
+  width: 100%;
+  padding: 8px 12px;
+  border-radius: 8px;
+  border: 1px solid var(--divider);
+  background: var(--bg);
+  color: var(--text);
+  margin-bottom: 12px;
+  font-size: 0.85rem;
+}
+
+.project-group { margin-bottom: 12px; }
+.project-header {
+  font-size: 0.75rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  color: var(--text-dim);
+  margin-bottom: 6px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.project-dot { width: 8px; height: 8px; border-radius: 50%; }
+
+.available-task {
+  padding: 8px 12px;
+  border-radius: 8px;
+  background: rgba(0,0,0,0.2);
+  margin-bottom: 4px;
+  font-size: 0.85rem;
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  transition: background 0.2s;
+}
+
+.available-task:hover { background: rgba(255,255,255,0.05); }
+
+.task-tags { display: flex; flex-wrap: wrap; gap: 4px; }
+.task-tag { font-size: 0.6rem; padding: 1px 6px; border-radius: 4px; background: var(--divider); color: var(--text); }
+
+/* ── Modals ───────────────────────────────────────────────────────────── */
+.modal-overlay {
+  position: fixed;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background: rgba(0,0,0,0.8);
+  display: none;
+  align-items: center;
+  justify-content: center;
+  z-index: 2000;
+  backdrop-filter: blur(4px);
+}
+
+.modal-content {
+  background: var(--bg);
+  border: 1px solid var(--divider);
+  border-radius: 20px;
+  padding: 24px;
+  width: 90%;
+  max-width: 360px;
+  box-shadow: 0 10px 40px rgba(0,0,0,0.5);
+}
+
+.modal-content h2 { margin-bottom: 16px; }
+
+.duration-input-wrapper {
+  display: flex;
+  gap: 8px;
+  margin: 16px 0;
+}
+
+.duration-input-wrapper input {
+  flex: 1;
+  padding: 12px;
+  border-radius: 10px;
+  border: 1px solid var(--divider);
+  background: var(--card-bg);
+  color: var(--text);
+  font-size: 1.2rem;
+  text-align: center;
+}
+
+.modal-footer {
+  display: flex;
+  justify-content: flex-end;
+  gap: 12px;
+}
+
+.btn {
+  padding: 8px 16px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: 600;
+  border: none;
+}
+
+.btn-primary { background: var(--primary); color: #1e1e2e; }
+.btn-ghost { background: none; color: var(--text-dim); }
+
+/* ── Utilities ────────────────────────────────────────────────────────── */
+.hidden { display: none !important; }
+.flex-row { display: flex; align-items: center; gap: 8px; }
+.empty-placeholder { text-align: center; color: var(--text-dim); padding: 20px; font-style: italic; font-size: 0.85rem; }
+
+.quick-add-box {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  justify-content: center;
+}
+.btn-xs {
+  font-size: 0.65rem;
+  padding: 4px 8px;
+  font-weight: 700;
+  border-radius: 6px;
+}
+
+.loop-toggle {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.8rem;
+  color: var(--text-dim);
+  cursor: pointer;
+  user-select: none;
+}
+
+.loop-toggle input {
+  accent-color: var(--primary);
+  width: 16px;
+  height: 16px;
+  cursor: pointer;
+}
+
+.subtask-item {
+  margin-left: 16px;
+  border-left: 2px solid var(--divider);
+  padding-left: 8px;
+}
+
+.subtask-item .available-task {
+  font-size: 0.8rem;
+  opacity: 0.9;
+}
+
+</style>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&family=Outfit:wght@600;900&display=swap" rel="stylesheet">
+</head>
+<body>
+
+<div class="glass-bg"></div>
+
+<div id="app">
+  <!-- Timer Card -->
+  <div class="timer-card" id="timer-card">
+    <button onclick="ui.toggleCollapse()" style="position:absolute; top: 16px; right: 16px; background: none; border: none; color: var(--text-dim); cursor: pointer;">
+      <svg id="icon-collapse" width="24" height="24" viewBox="0 0 24 24" fill="currentColor"><path d="M12 8l-6 6 1.41 1.41L12 10.83l4.59 4.58L18 14z"/></svg>
+      <svg id="icon-expand" class="hidden" width="24" height="24" viewBox="0 0 24 24" fill="currentColor"><path d="M16.59 8.59L12 13.17 7.41 8.59 6 10l6 6 6-6z"/></svg>
+    </button>
+    <div id="session-title" class="session-badge">Chrono</div>
+    <div id="total-time-display" style="font-size: 0.8rem; color: var(--text-dim); margin-bottom: 8px;">Total: 0s / 0s</div>
+
+    <div id="timer-card-full">
+      <div id="current-task-name">No task selected</div>
+      <div id="timer-display" class="timer-digits">00:00</div>
+      
+      <div class="progress-container">
+        <div id="progress-bar" class="progress-bar"></div>
+      </div>
+
+      <!-- +/- Controls -->
+      <div class="controls" style="margin-bottom: 12px;">
+        <button onclick="adjustTime(-60)" class="btn-adj minus">- 1m</button>
+        <button onclick="adjustTime(-10)" class="btn-adj minus">- 10s</button>
+        <button onclick="adjustTime(10)" class="btn-adj plus">+ 10s</button>
+        <button onclick="adjustTime(60)" class="btn-adj plus">+ 1m</button>
+      </div>
+
+      <!-- Main Controls -->
+      <div class="controls">
+        <button id="btn-prev" onclick="timer.prev()" class="btn-ctrl" title="Previous">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor"><path d="M6 6h2v12H6zm3.5 6l8.5 6V6z"/></svg>
+        </button>
+        
+        <button id="btn-play-pause" onclick="timer.toggle()" class="btn-ctrl btn-main">
+          <svg id="play-icon" width="32" height="32" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
+          <svg id="pause-icon" class="hidden" width="32" height="32" viewBox="0 0 24 24" fill="currentColor"><path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/></svg>
+        </button>
+
+        <button id="btn-next" onclick="timer.next()" class="btn-ctrl" title="Next">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor"><path d="M6 18l8.5-6L6 6v12zM16 6v12h2V6h-2z"/></svg>
+        </button>
+
+        <button onclick="timer.reset()" class="btn-ctrl" title="Reset">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M23 4v6h-6M1 20v-6h6"/><path d="M3.51 9a9 9 0 0114.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0020.49 15"/></svg>
+        </button>
+      </div>
+
+      <!-- Add Unplanned Task Button -->
+      <div style="margin-top: 16px;">
+        <button class="btn btn-primary" style="width: 100%; border-radius: 12px;" onclick="ui.prepareUnplannedTask()">
+          ✨ Add Unplanned Task (Insert Next)
+        </button>
+      </div>
+    </div>
+    
+    <!-- Slim View -->
+    <div id="timer-card-slim" class="hidden" style="display:flex; justify-content:space-between; align-items:center; margin-top: 8px;">
+      <div style="flex: 1; min-width: 0; display:flex; flex-direction:column; align-items: flex-start; margin-right: 8px;">
+        <div id="slim-task-name" style="font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; width: 100%; text-align: left;">No task selected</div>
+        <div id="slim-timer-display" style="font-family: var(--font-display); font-size: 1.5rem; font-weight: 900; color: var(--primary);">00:00</div>
+      </div>
+      <div style="display:flex; gap: 4px;">
+        <button onclick="timer.prev()" class="btn-ctrl" style="padding: 4px;"><svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor"><path d="M6 6h2v12H6zm3.5 6l8.5 6V6z"/></svg></button>
+        <button onclick="timer.toggle()" class="btn-ctrl" style="padding: 4px; color: var(--primary);">
+          <svg id="slim-play-icon" width="32" height="32" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
+          <svg id="slim-pause-icon" class="hidden" width="32" height="32" viewBox="0 0 24 24" fill="currentColor"><path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/></svg>
+        </button>
+        <button onclick="timer.next()" class="btn-ctrl" style="padding: 4px;"><svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor"><path d="M6 18l8.5-6L6 6v12zM16 6v12h2V6h-2z"/></svg></button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Sequence List -->
+  <div class="section-header">
+    <h3>Planned Sequence</h3>
+    <div style="display:flex; gap: 8px; align-items: center;">
+      <label class="loop-toggle" title="Restart sequence from the beginning when finished">
+        <input type="checkbox" id="loop-infinite" onchange="ui.toggleLoop(this.checked)">
+        Loop ∞
+      </label>
+      <button class="btn btn-ghost" onclick="ui.prepareCustomTask()">+ Add Custom</button>
+      <button class="btn btn-adj" onclick="timer.clearSequence()">Clear All</button>
+    </div>
+  </div>
+  <div id="sequence-list" class="sequence-list" 
+       ondragover="ui.onDragOver(event)" 
+       ondrop="ui.onDrop(event, 'sequence')" 
+       ondragleave="ui.onDragLeave(event)">
+    <div class="empty-placeholder">Drag tasks here to plan your sequence</div>
+  </div>
+
+  <!-- Source Tasks -->
+  <div class="source-lists">
+    <!-- Today's Tasks -->
+    <div class="list-container">
+      <h3>📌 Today's Tasks <span id="count-today" class="task-count-badge">0</span></h3>
+      <input type="search" class="search-box" placeholder="Filter today's tasks..." oninput="ui.filterTasks('today', this.value)">
+      <div id="list-today"></div>
+    </div>
+
+    <!-- All Tasks -->
+    <div class="list-container">
+      <h3>📂 All Tasks <span id="count-all" class="task-count-badge">0</span></h3>
+      <input type="search" class="search-box" placeholder="Search all tasks..." oninput="ui.filterTasks('all', this.value)">
+      <div id="list-all"></div>
+    </div>
+  </div>
+</div>
+
+<!-- Modal: Duration Prompt -->
+<div id="modal-duration" class="modal-overlay">
+  <div class="modal-content">
+    <h2 id="modal-task-title">Task Duration</h2>
+    <div id="custom-title-wrapper" class="hidden" style="margin-bottom: 16px;">
+      <p class="text-dim">Task Title</p>
+      <input type="text" id="input-title" placeholder="My Custom Task" style="width:100%; padding: 12px; border-radius: 10px; border: 1px solid var(--divider); background: var(--card-bg); color: var(--text); font-size: 1.1rem; margin-top: 4px;">
+    </div>
+    <p class="text-dim">Enter duration (e.g., 10, 30s, 1.5h)</p>
+    <div class="duration-input-wrapper">
+      <input type="text" id="input-duration" placeholder="10" autofocus>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-ghost" onclick="ui.closeModal()">Cancel</button>
+      <button id="modal-confirm-btn" class="btn btn-primary" onclick="ui.confirmTaskAdd()">Add to Chrono</button>
+    </div>
+  </div>
+</div>
+
+<audio id="audio-beep" src="https://assets.mixkit.co/active_storage/sfx/2869/2869-preview.mp3" preload="auto"></audio>
+
+<script>
+// ── CORE STATE ───────────────────────────────────────────────────────────────
+let state = {
+  steps: [], // { taskId, title, duration, color?, projectId? }
+  currentIndex: 0,
+  currentTime: 0,
+  isRunning: false,
+  lastUpdate: Date.now(),
+  loopInfinite: false
+};
+
+let uiState = {
+  isCollapsed: false,
+  moveMenuIndex: null
+};
+let skipExternalStartUntil = 0;
+
+let allTasks = [];
+let allProjects = [];
+let allTags = [];
+let pendingTask = null; // For modal
+let dragsource = null;
+let autreTaskId = null;
+const AUTRE_TASK_TITLE = 'autre';
+
+// ── TIMER ENGINE ─────────────────────────────────────────────────────────────
+const timer = {
+  interval: null,
+
+  start(silent = false) {
+    if (state.steps.length === 0) return;
+    state.isRunning = true;
+    state.lastUpdate = Date.now();
+    this.interval = setInterval(() => this.tick(), 1000);
+    ui.updateTimerView();
+    persistence.save();
+    
+    // Auto-start task in SP
+    if (!silent && state.steps[state.currentIndex]) {
+      this.syncCurrentStepWithSP();
+    }
+  },
+
+  pause(silent = false) {
+    state.isRunning = false;
+    clearInterval(this.interval);
+    ui.updateTimerView();
+    persistence.save();
+
+    if (!silent) {
+      this.syncWithSP(null);
+    }
+  },
+
+  toggle(silent = false) {
+    state.isRunning ? this.pause(silent) : this.start(silent);
+  },
+
+  tick() {
+    if (state.currentTime > 0) {
+      state.currentTime--;
+      state.lastUpdate = Date.now();
+      ui.updateTimerView();
+      // Only persist every 10 ticks or on status change to avoid overhead
+      if (state.currentTime % 10 === 0) persistence.save();
+    } else {
+      this.next(true);
+    }
+  },
+
+  next(auto = false) {
+    if (state.currentIndex < state.steps.length - 1) {
+      state.currentIndex++;
+      state.currentTime = state.steps[state.currentIndex].duration;
+      if (auto) ui.playBeep();
+      ui.updateTimerView();
+      ui.renderSequence();
+      persistence.save();
+      
+      if (state.isRunning) {
+        this.syncCurrentStepWithSP();
+      }
+    } else if (state.loopInfinite && state.steps.length > 0) {
+      state.currentIndex = 0;
+      state.currentTime = state.steps[0].duration;
+      if (auto) ui.playBeep();
+      ui.updateTimerView();
+      ui.renderSequence();
+      persistence.save();
+      
+      if (state.isRunning) {
+        this.syncCurrentStepWithSP();
+      }
+    } else {
+      this.pause();
+      state.currentTime = 0;
+      if (auto) ui.playBeep();
+      ui.updateTimerView();
+      persistence.save();
+    }
+  },
+
+  prev() {
+    if (state.currentIndex > 0) {
+      state.currentIndex--;
+      state.currentTime = state.steps[state.currentIndex].duration;
+    } else {
+      state.currentTime = state.steps[0] ? state.steps[0].duration : 0;
+    }
+    ui.updateTimerView();
+    ui.renderSequence();
+    persistence.save();
+    if (state.isRunning) {
+      this.syncCurrentStepWithSP();
+    }
+  },
+
+  reset() {
+    this.pause();
+    state.currentIndex = 0;
+    state.currentTime = state.steps[0] ? state.steps[0].duration : 0;
+    ui.updateTimerView();
+    ui.renderSequence();
+    persistence.save();
+  },
+
+  clearSequence() {
+    this.pause();
+    state.steps = [];
+    state.currentIndex = 0;
+    state.currentTime = 0;
+    ui.updateTimerView();
+    ui.renderSequence();
+    persistence.save();
+  },
+
+  syncCurrentStepWithSP() {
+    const step = state.steps[state.currentIndex];
+    if (!step) return;
+    if (step.taskId.startsWith('custom_')) {
+      spSync.prepareAndStartAutre();
+    } else {
+      this.syncWithSP(step.taskId);
+    }
+  },
+
+  syncWithSP(taskId) {
+    if (window.PluginAPI && PluginAPI.dispatchAction) {
+      PluginAPI.dispatchAction({ type: '[Task] SetCurrentTask', id: taskId });
+    }
+  }
+};
+
+function adjustTime(seconds) {
+  state.currentTime = Math.max(0, state.currentTime + seconds);
+  ui.updateTimerView();
+  persistence.save();
+}
+
+const AUTRE_WAIT_MS = 10000;
+const AUTRE_POLL_MS = 300;
+
+const spSync = {
+  todayStr() {
+    return new Date().toISOString().split('T')[0];
+  },
+
+  findAutre(tasks, today) {
+    return (tasks || []).find(t =>
+      t &&
+      String(t.title || '').toLowerCase() === AUTRE_TASK_TITLE &&
+      t.dueDay === today &&
+      !t.isDone &&
+      !t.parentId
+    );
+  },
+
+  async refreshTasks() {
+    allTasks = await PluginAPI.getTasks();
+    return allTasks;
+  },
+
+  sleep(ms) {
+    return new Promise(resolve => setTimeout(resolve, ms));
+  },
+
+  async ensureAutreTask() {
+    const today = this.todayStr();
+    await this.refreshTasks();
+    let autre = this.findAutre(allTasks, today);
+    let created = null;
+
+    if (!autre) {
+      created = await PluginAPI.addTask({
+        title: AUTRE_TASK_TITLE,
+        dueDay: today,
+        projectId: null
+      });
+    }
+
+    const deadline = Date.now() + AUTRE_WAIT_MS;
+    while (Date.now() < deadline) {
+      await this.refreshTasks();
+      autre = this.findAutre(allTasks, today);
+      if (autre) {
+        autreTaskId = autre.id;
+        return autre.id;
+      }
+      await this.sleep(AUTRE_POLL_MS);
+    }
+
+    await this.refreshTasks();
+    autre = this.findAutre(allTasks, today);
+    if (autre) {
+      autreTaskId = autre.id;
+      return autre.id;
+    }
+    if (created && created.id) {
+      autreTaskId = created.id;
+      return created.id;
+    }
+    return null;
+  },
+
+  async prepareAndStartAutre() {
+    const id = await this.ensureAutreTask();
+    if (id) timer.syncWithSP(id);
+  }
+};
+
+// ── UI CONTROLLER ────────────────────────────────────────────────────────────
+const ui = {
+  renderTasks(type, query = '') {
+    const listEl = document.getElementById(`list-${type}`);
+    const countEl = document.getElementById(`count-${type}`);
+    const parentTasks = allTasks.filter(t => !t.isDone && !t.parentId);
+    const subtasksByParent = {};
+    allTasks.filter(t => !t.isDone && t.parentId).forEach(t => {
+      if (!subtasksByParent[t.parentId]) subtasksByParent[t.parentId] = [];
+      subtasksByParent[t.parentId].push(t);
+    });
+
+    let tasks = parentTasks.slice();
+    
+    if (type === 'today') {
+      const today = new Date().toISOString().split('T')[0];
+      tasks = tasks.filter(t => t.dueDay === today);
+    }
+    
+    if (query) {
+      const q = query.toLowerCase();
+      tasks = tasks.filter(t => {
+        if (t.title.toLowerCase().includes(q)) return true;
+        const subs = subtasksByParent[t.id] || [];
+        return subs.some(s => s.title.toLowerCase().includes(q));
+      });
+    }
+
+    const visibleSubtaskCount = tasks.reduce((sum, t) => sum + (subtasksByParent[t.id]?.length || 0), 0);
+    countEl.textContent = tasks.length + visibleSubtaskCount;
+    
+    const groups = {};
+    tasks.forEach(t => {
+      const pid = t.projectId || 'inbox';
+      if (!groups[pid]) groups[pid] = [];
+      groups[pid].push(t);
+    });
+
+    let html = '';
+    const sortedPids = Object.keys(groups).sort();
+    
+    sortedPids.forEach(pid => {
+      const project = allProjects.find(p => p.id === pid);
+      html += `<div class="project-group">
+        <div class="project-header">
+          <span class="project-dot" style="background:${project?.theme?.primary || '#89b4fa'}"></span>
+          ${project?.title || 'Inbox'}
+        </div>`;
+      
+      groups[pid].forEach(task => {
+        html += this.renderAvailableTaskRow(task, false);
+        (subtasksByParent[task.id] || []).forEach(sub => {
+          if (!query || sub.title.toLowerCase().includes(query.toLowerCase())) {
+            html += this.renderAvailableTaskRow(sub, true);
+          }
+        });
+      });
+      html += `</div>`;
+    });
+
+    listEl.innerHTML = html || '<div class="empty-placeholder">No tasks available</div>';
+  },
+
+  renderAvailableTaskRow(task, isSubtask) {
+    const prefix = isSubtask ? '↳ ' : '';
+    return `<div class="${isSubtask ? 'subtask-item' : ''}">
+      <div class="available-task" draggable="true" ondragstart="ui.onTaskDragStart(event, '${task.id}')" onclick="ui.toggleQuickAdd(this)">
+        <div style="display:flex; justify-content:space-between; width:100%; gap: 8px;">
+          <div style="flex:1;">
+            <div>${prefix}${task.title}</div>
+            <div class="task-tags">
+              ${(task.tagIds || []).map(tid => {
+                const tag = allTags.find(tg => tg.id === tid);
+                return tag ? `<span class="task-tag" style="background:${tag.color || 'var(--divider)'}">${tag.title}</span>` : '';
+              }).join('')}
+            </div>
+          </div>
+          <div class="quick-add-box hidden">
+            <button class="btn btn-primary btn-xs" onclick="event.stopPropagation(); ui.startAddTask('${task.id}', 'top')">Add Top</button>
+            <button class="btn btn-primary btn-xs" onclick="event.stopPropagation(); ui.startAddTask('${task.id}', 'bottom')">Add Bottom</button>
+          </div>
+        </div>
+      </div>
+    </div>`;
+  },
+
+  enrichStepColors() {
+    state.steps.forEach(step => {
+      if (step.taskId.startsWith('custom_')) return;
+      const task = allTasks.find(t => t.id === step.taskId);
+      if (task) {
+        step.color = this.getProjectColor(this.getTaskProjectId(task));
+        step.projectId = this.getTaskProjectId(task);
+      }
+    });
+  },
+
+  getStepColor(step) {
+    if (step.color) return step.color;
+    if (step.taskId.startsWith('custom_')) return '#89b4fa';
+    const task = allTasks.find(t => t.id === step.taskId);
+    return task ? this.getProjectColor(this.getTaskProjectId(task)) : '#89b4fa';
+  },
+
+  toggleLoop(checked) {
+    state.loopInfinite = checked;
+    persistence.save();
+  },
+
+  renderSequence() {
+    const listEl = document.getElementById('sequence-list');
+    if (state.steps.length === 0) {
+      listEl.innerHTML = '<div class="empty-placeholder">Drag tasks here to plan your sequence</div>';
+      return;
+    }
+
+    this.enrichStepColors();
+
+    let html = '';
+    state.steps.forEach((step, idx) => {
+      const isActive = idx === state.currentIndex;
+      const stepColor = this.getStepColor(step);
+      html += `<div class="task-item ${isActive ? 'active' : ''}" 
+                   style="--step-color: ${stepColor}"
+                   draggable="true" 
+                   ondragstart="ui.onSequenceDragStart(event, ${idx})"
+                   ondragover="ui.onDragOver(event)"
+                   ondrop="ui.onDrop(event, 'reorder', ${idx})">
+        <div class="task-drag-handle" title="Drag to reorder, or tap for arrows" onclick="event.stopPropagation(); ui.toggleMoveMenu(event, ${idx})">⠿</div>
+        ${uiState.moveMenuIndex === idx ? `<div class="reorder-arrows">
+          <button class="btn-reorder" ${idx === 0 ? 'disabled' : ''} title="Move up" onclick="event.stopPropagation(); ui.moveStep(${idx}, -1)">▲</button>
+          <button class="btn-reorder" ${idx === state.steps.length - 1 ? 'disabled' : ''} title="Move down" onclick="event.stopPropagation(); ui.moveStep(${idx}, 1)">▼</button>
+        </div>` : ''}
+        <div class="task-content" onclick="ui.editStep(${idx})">
+          <div class="task-title">${step.title}</div>
+          <div class="task-duration-label">${this.formatDuration(step.duration)}</div>
+        </div>
+        <div class="task-actions">
+          <button class="btn-tiny" onclick="event.stopPropagation(); ui.removeStep(${idx})">✕</button>
+        </div>
+      </div>`;
+    });
+    listEl.innerHTML = html;
+  },
+
+  updateTimerView() {
+    const display = document.getElementById('timer-display');
+    const slimDisplay = document.getElementById('slim-timer-display');
+    const bar = document.getElementById('progress-bar');
+    const taskName = document.getElementById('current-task-name');
+    const slimTaskName = document.getElementById('slim-task-name');
+    const playIcon = document.getElementById('play-icon');
+    const pauseIcon = document.getElementById('pause-icon');
+    const slimPlayIcon = document.getElementById('slim-play-icon');
+    const slimPauseIcon = document.getElementById('slim-pause-icon');
+    const totalTimeDisplay = document.getElementById('total-time-display');
+
+    // Digits
+    const mins = Math.floor(state.currentTime / 60);
+    const secs = state.currentTime % 60;
+    const timeStr = `${String(mins).padStart(2, '0')}:${String(secs).padStart(2, '0')}`;
+    
+    display.textContent = timeStr;
+    slimDisplay.textContent = timeStr;
+    
+    // Colors based on time left
+    const currentStep = state.steps[state.currentIndex];
+    const total = currentStep ? currentStep.duration : 1;
+    const pct = (state.currentTime / total);
+    
+    display.className = 'timer-digits';
+    slimDisplay.style.color = 'var(--primary)';
+    if (pct <= 0.1) {
+      display.classList.add('danger');
+      slimDisplay.style.color = 'var(--danger)';
+    } else if (pct <= 0.25) {
+      display.classList.add('warning');
+      slimDisplay.style.color = 'var(--warning)';
+    }
+
+    // Progress Bar
+    bar.style.width = `${(1 - pct) * 100}%`;
+    bar.style.transition = state.isRunning ? 'width 1s linear' : 'none';
+
+    // Task Name
+    const title = currentStep ? currentStep.title : 'No task selected';
+    taskName.textContent = title;
+    slimTaskName.textContent = title;
+    
+    // Icons
+    if (state.isRunning) {
+      playIcon.classList.add('hidden');
+      pauseIcon.classList.remove('hidden');
+      slimPlayIcon.classList.add('hidden');
+      slimPauseIcon.classList.remove('hidden');
+    } else {
+      playIcon.classList.remove('hidden');
+      pauseIcon.classList.add('hidden');
+      slimPlayIcon.classList.remove('hidden');
+      slimPauseIcon.classList.add('hidden');
+    }
+
+    // Total Time Calculation
+    let totalSecs = 0;
+    let elapsedSecs = 0;
+    
+    if (state.steps.length > 0) {
+      totalSecs = state.steps.reduce((sum, s) => sum + s.duration, 0);
+      
+      const prevDurations = state.steps.slice(0, state.currentIndex).reduce((sum, s) => sum + s.duration, 0);
+      const currentElapsed = currentStep ? Math.max(0, currentStep.duration - state.currentTime) : 0;
+      
+      // If completed sequence, keep elapsed = total
+      if (state.currentIndex >= state.steps.length) {
+        elapsedSecs = totalSecs;
+      } else {
+        elapsedSecs = prevDurations + currentElapsed;
+      }
+    }
+    
+    totalTimeDisplay.textContent = `Total: ${this.formatDuration(elapsedSecs)} / ${this.formatDuration(totalSecs)}`;
+
+    // Tab title
+    if (state.isRunning) {
+      document.title = `(${display.textContent}) Chrono`;
+    } else {
+      document.title = `Chrono Pro`;
+    }
+  },
+
+  formatDuration(sec) {
+    const m = Math.floor(sec / 60);
+    const s = sec % 60;
+    if (m > 0) return `${m}m ${s > 0 ? s + 's' : ''}`;
+    return `${s}s`;
+  },
+
+  parseDuration(str) {
+    str = str.toLowerCase().trim();
+    if (!str) return 600; // default 10m
+    const match = str.match(/^([\d.]+)\s*([smh])?$/);
+    if (!match) return parseInt(str) * 60 || 600;
+    
+    const val = parseFloat(match[1]);
+    const unit = match[2] || 'm';
+    if (unit === 's') return val;
+    if (unit === 'h') return val * 3600;
+    return val * 60; // m
+  },
+
+  // Drag & Drop
+  onTaskDragStart(ev, id) {
+    dragsource = { type: 'source', id };
+    ev.dataTransfer.setData('application/json', JSON.stringify(dragsource));
+  },
+
+  onSequenceDragStart(ev, idx) {
+    uiState.moveMenuIndex = null;
+    dragsource = { type: 'reorder', idx };
+    ev.dataTransfer.setData('application/json', JSON.stringify(dragsource));
+  },
+
+  toggleMoveMenu(ev, idx) {
+    ev.preventDefault();
+    uiState.moveMenuIndex = uiState.moveMenuIndex === idx ? null : idx;
+    this.renderSequence();
+  },
+
+  moveStep(idx, dir) {
+    const target = idx + dir;
+    if (target < 0 || target >= state.steps.length) return;
+    const item = state.steps.splice(idx, 1)[0];
+    state.steps.splice(target, 0, item);
+    if (state.currentIndex === idx) state.currentIndex = target;
+    else if (state.currentIndex === target) state.currentIndex = idx;
+    uiState.moveMenuIndex = target;
+    this.renderSequence();
+    this.updateTimerView();
+    persistence.save();
+  },
+
+  onDragOver(ev) {
+    ev.preventDefault();
+    ev.currentTarget.classList.add('drag-over');
+  },
+
+  onDragLeave(ev) {
+    ev.currentTarget.classList.remove('drag-over');
+  },
+
+  onDrop(ev, targetType, targetIdx) {
+    ev.preventDefault();
+    ev.currentTarget.classList.remove('drag-over');
+    
+    let data;
+    try {
+      data = JSON.parse(ev.dataTransfer.getData('application/json'));
+    } catch(e) {
+      // Fallback for SP external drag
+      const extId = dragsource?.id || (window.PluginAPI && PluginAPI.getDraggedTaskId ? PluginAPI.getDraggedTaskId() : null);
+      if (extId) data = { type: 'source', id: extId };
+    }
+
+    if (!data) return;
+
+    if (data.type === 'source') {
+      const task = allTasks.find(t => t.id === data.id);
+      if (task) {
+        pendingTask = { task, targetIdx };
+        this.openModal(task.title);
+      }
+    } else if (data.type === 'reorder' && targetType === 'reorder') {
+      const item = state.steps.splice(data.idx, 1)[0];
+      state.steps.splice(targetIdx, 0, item);
+      this.renderSequence();
+      persistence.save();
+    }
+  },
+
+  prepareUnplannedTask() {
+    // Scroll to source lists and highlight them
+    document.querySelector('.source-lists').scrollIntoView({ behavior: 'smooth' });
+    // Tell the next "source" drop to be inserted after current index
+    pendingTask = { forceInsertNext: true };
+    // Provide visual feedback
+    const btn = document.querySelector('button[onclick="ui.prepareUnplannedTask()"]');
+    const originalText = btn.textContent;
+    btn.textContent = "👆 Drop a task into the sequence!";
+    btn.style.background = "var(--success)";
+    setTimeout(() => {
+      btn.textContent = originalText;
+      btn.style.background = "";
+    }, 5000);
+  },
+
+  prepareCustomTask() {
+    pendingTask = { isCustom: true };
+    document.getElementById('modal-task-title').style.display = 'none';
+    document.getElementById('custom-title-wrapper').classList.remove('hidden');
+    document.getElementById('input-title').value = 'Custom Task';
+    document.getElementById('input-duration').value = '5';
+    document.getElementById('modal-confirm-btn').textContent = 'Add to Chrono';
+    document.getElementById('modal-duration').style.display = 'flex';
+    document.getElementById('input-title').focus();
+    document.getElementById('input-title').select();
+  },
+
+  editStep(idx) {
+    const step = state.steps[idx];
+    if (!step) return;
+    const isCustom = step.taskId.startsWith('custom_');
+    pendingTask = { editIndex: idx, isCustom };
+
+    if (isCustom) {
+      document.getElementById('modal-task-title').style.display = 'none';
+      document.getElementById('custom-title-wrapper').classList.remove('hidden');
+      document.getElementById('input-title').value = step.title;
+    } else {
+      document.getElementById('modal-task-title').style.display = 'block';
+      document.getElementById('modal-task-title').textContent = step.title;
+      document.getElementById('custom-title-wrapper').classList.add('hidden');
+    }
+
+    const mins = Math.floor(step.duration / 60);
+    const secs = step.duration % 60;
+    document.getElementById('input-duration').value = mins > 0 ? (secs > 0 ? `${mins}m ${secs}s` : `${mins}`) : `${secs}s`;
+    document.getElementById('modal-confirm-btn').textContent = 'Save';
+    document.getElementById('modal-duration').style.display = 'flex';
+    document.getElementById('input-duration').focus();
+    document.getElementById('input-duration').select();
+  },
+
+  toggleCollapse() {
+    uiState.isCollapsed = !uiState.isCollapsed;
+    const full = document.getElementById('timer-card-full');
+    const slim = document.getElementById('timer-card-slim');
+    const expIcon = document.getElementById('icon-expand');
+    const colIcon = document.getElementById('icon-collapse');
+    
+    if (uiState.isCollapsed) {
+      full.classList.add('hidden');
+      slim.classList.remove('hidden');
+      expIcon.classList.remove('hidden');
+      colIcon.classList.add('hidden');
+    } else {
+      full.classList.remove('hidden');
+      slim.classList.add('hidden');
+      expIcon.classList.add('hidden');
+      colIcon.classList.remove('hidden');
+    }
+  },
+
+  toggleQuickAdd(element) {
+    const box = element.querySelector('.quick-add-box');
+    if (box) box.classList.toggle('hidden');
+  },
+
+  startAddTask(taskId, pos) {
+    const task = allTasks.find(t => t.id === taskId);
+    if (!task) return;
+    pendingTask = { task, position: pos };
+    this.openModal(task.title);
+  },
+
+  openModal(title) {
+    document.getElementById('modal-task-title').style.display = 'block';
+    document.getElementById('modal-task-title').textContent = title;
+    document.getElementById('custom-title-wrapper').classList.add('hidden');
+    document.getElementById('input-duration').value = '10';
+    document.getElementById('modal-confirm-btn').textContent = 'Add to Chrono';
+    document.getElementById('modal-duration').style.display = 'flex';
+    document.getElementById('input-duration').focus();
+    document.getElementById('input-duration').select();
+  },
+
+  closeModal() {
+    document.getElementById('modal-duration').style.display = 'none';
+  },
+
+  getProjectColor(projectId) {
+    const project = allProjects.find(p => p.id === projectId);
+    return project?.theme?.primary || '#89b4fa';
+  },
+
+  getTaskProjectId(task) {
+    if (task.projectId) return task.projectId;
+    if (task.parentId) {
+      const parent = allTasks.find(t => t.id === task.parentId);
+      return parent?.projectId || null;
+    }
+    return null;
+  },
+
+  confirmTaskAdd() {
+    const durStr = document.getElementById('input-duration').value;
+    const durSec = this.parseDuration(durStr);
+
+    if (pendingTask.editIndex !== undefined) {
+      const idx = pendingTask.editIndex;
+      state.steps[idx].duration = durSec;
+      if (pendingTask.isCustom) {
+        state.steps[idx].title = document.getElementById('input-title').value || 'Custom Task';
+      }
+      if (idx === state.currentIndex) {
+        state.currentTime = durSec;
+      }
+      this.renderSequence();
+      this.updateTimerView();
+      this.closeModal();
+      persistence.save();
+      pendingTask = null;
+      return;
+    }
+    
+    let newStep;
+    if (pendingTask.isCustom) {
+      newStep = {
+        taskId: 'custom_' + Date.now(),
+        title: document.getElementById('input-title').value || 'Custom Task',
+        duration: durSec
+      };
+    } else {
+      newStep = {
+        taskId: pendingTask.task.id,
+        title: pendingTask.task.title,
+        duration: durSec,
+        color: this.getProjectColor(this.getTaskProjectId(pendingTask.task)),
+        projectId: this.getTaskProjectId(pendingTask.task)
+      };
+    }
+
+    if (pendingTask.forceInsertNext) {
+      const targetIdx = state.currentIndex === 0 && state.steps.length > 0 && !state.isRunning && state.currentTime === 0 
+                      ? 0 
+                      : state.currentIndex + 1;
+      state.steps.splice(targetIdx, 0, newStep);
+    } else if (pendingTask.targetIdx !== undefined) {
+      state.steps.splice(pendingTask.targetIdx, 0, newStep);
+    } else if (pendingTask.position === 'top') {
+      const insertIdx = state.isRunning || (state.currentTime > 0) ? state.currentIndex + 1 : 0;
+      state.steps.splice(insertIdx, 0, newStep);
+    } else {
+      // position 'bottom' or default
+      state.steps.push(newStep);
+    }
+
+    if (state.steps.length === 1) {
+       state.currentTime = durSec;
+       state.currentIndex = 0;
+    }
+    
+    this.renderSequence();
+    this.updateTimerView();
+    this.closeModal();
+    persistence.save();
+    pendingTask = null;
+  },
+
+  removeStep(idx) {
+    state.steps.splice(idx, 1);
+    if (state.currentIndex >= state.steps.length) {
+      state.currentIndex = Math.max(0, state.steps.length - 1);
+      state.currentTime = state.steps[state.currentIndex] ? state.steps[state.currentIndex].duration : 0;
+    }
+    this.renderSequence();
+    this.updateTimerView();
+    persistence.save();
+  },
+
+  filterTasks(type, val) {
+    this.renderTasks(type, val);
+  },
+
+  playBeep() {
+    const audio = document.getElementById('audio-beep');
+    audio.currentTime = 0;
+    audio.play().catch(e => console.warn("Beep failed: ", e));
+  }
+};
+
+// ── PERSISTENCE ──────────────────────────────────────────────────────────────
+const persistence = {
+  save() {
+    if (typeof PluginAPI === 'undefined') return;
+    const dataToSave = JSON.stringify({
+      steps: state.steps,
+      currentIndex: state.currentIndex,
+      currentTime: state.currentTime,
+      isRunning: state.isRunning,
+      loopInfinite: state.loopInfinite,
+      lastUpdate: Date.now()
+    });
+    PluginAPI.persistDataSynced(dataToSave).catch(e => console.error("Save failed", e));
+  },
+
+  async load() {
+    if (typeof PluginAPI === 'undefined') return;
+    try {
+      const raw = await PluginAPI.loadSyncedData();
+      if (raw) {
+        const d = JSON.parse(raw);
+        state.steps = d.steps || [];
+        state.currentIndex = d.currentIndex || 0;
+        state.currentTime = d.currentTime || 0;
+        state.isRunning = false;
+        state.loopInfinite = d.loopInfinite || false;
+        const loopEl = document.getElementById('loop-infinite');
+        if (loopEl) loopEl.checked = state.loopInfinite;
+      }
+    } catch(e) {
+      console.error("Load failed", e);
+    }
+  }
+};
+
+// ── INITIALIZATION ───────────────────────────────────────────────────────────
+async function init() {
+  if (typeof PluginAPI === 'undefined') {
+    setTimeout(init, 100);
+    return;
+  }
+
+  // Load context from SP
+  allTasks = await PluginAPI.getTasks();
+  allProjects = await PluginAPI.getAllProjects();
+  allTags = await PluginAPI.getAllTags();
+
+  // Load plugin state
+  await persistence.load();
+  ui.enrichStepColors();
+
+  // Initial render
+  ui.renderTasks('today');
+  ui.renderTasks('all');
+  ui.renderSequence();
+  ui.updateTimerView();
+  skipExternalStartUntil = Date.now() + 4000;
+
+  // Listen for updates from SP globally
+  PluginAPI.registerHook(PluginAPI.Hooks.PERSISTED_DATA_UPDATE, async (p) => {
+    // Only update if external change (e.g. from another device)
+    // For now we just refresh tasks list when SP data changes
+    allTasks = await PluginAPI.getTasks();
+    ui.enrichStepColors();
+    ui.renderTasks('today');
+    ui.renderTasks('all');
+  });
+
+  // Listen for SP Actions from plugin.js
+  window.addEventListener('message', (e) => {
+    if (e.data && e.data.type === 'SP_ACTION') {
+      const action = e.data.action;
+      if (action.type === '[Task] SetCurrentTask') {
+        const spTaskId = action.id;
+        if (spTaskId === null && state.isRunning) {
+          // User paused the timer in SP directly
+          timer.pause(true); // pause silently
+        } else if (spTaskId && !state.isRunning && Date.now() > skipExternalStartUntil) {
+          const currentStep = state.steps[state.currentIndex];
+          const matchesStep = currentStep && (
+            currentStep.taskId === spTaskId ||
+            (currentStep.taskId.startsWith('custom_') && autreTaskId === spTaskId)
+          );
+          if (matchesStep) {
+            timer.start(true);
+          }
+        }
+      } else if (action.type === '[Task] Toggle start') {
+         // User clicked the global toggle button in SP
+         // Toggle Chrono if the current step task ID matches the currently active SP task
+         // We can be dumb here: if Chrono is running, toggle means pause
+         if (state.isRunning) {
+            timer.pause(true);
+         }
+      }
+    }
+  });
+
+  // Handle hotkeys
+  window.addEventListener('keydown', (e) => {
+    if (e.target.tagName === 'INPUT') return;
+    if (e.code === 'Space') { e.preventDefault(); timer.toggle(); }
+    if (e.code === 'ArrowRight') timer.next();
+    if (e.code === 'ArrowLeft') timer.prev();
+  });
+}
+
+init();
+
+</script>
+</body>
+</html>

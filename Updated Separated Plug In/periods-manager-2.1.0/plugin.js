@@ -1,6 +1,6 @@
 /**
- * Période + Chrono — host bridge
- * Forwards SP actions into the iframe and keeps Periods timer interception.
+ * Periods Manager Plugin - plugin.js
+ * Timer interception, UI registration, and SP action forwarding.
  */
 
 function dayIndex(d) {
@@ -12,20 +12,13 @@ function parseTime(str) {
   return parseInt(parts[0], 10) * 60 + parseInt(parts[1], 10);
 }
 
-function unwrapPeriods(parsed) {
-  if (!parsed) return { timetables: {}, dailyOverrides: {}, activeTimetableId: null, syncLog: [] };
-  if (parsed._unified) parsed = parsed.periods || {};
-  return parsed;
-}
-
 async function loadData() {
   try {
     var raw = await PluginAPI.loadSyncedData();
-    if (raw) {
-      var parsed = typeof raw === 'string' ? JSON.parse(raw) : raw;
-      return unwrapPeriods(parsed);
-    }
-  } catch (e) {}
+    if (raw) return JSON.parse(raw);
+  } catch (e) {
+    // ignore
+  }
   return { timetables: {}, dailyOverrides: {}, activeTimetableId: null, syncLog: [] };
 }
 
@@ -66,17 +59,8 @@ function findCurrentPeriod(periods, now) {
 function postToIframe(payload) {
   var iframes = document.querySelectorAll('iframe');
   iframes.forEach(function (iframe) {
-    var src = iframe.getAttribute('src') || '';
-    if (
-      src.indexOf('periode-chrono') !== -1 ||
-      src.indexOf('periods-manager') !== -1 ||
-      src.indexOf('chrono') !== -1 ||
-      src.indexOf('blob:') === 0 ||
-      iframe.hasAttribute('srcdoc')
-    ) {
-      try {
-        iframe.contentWindow.postMessage(payload, '*');
-      } catch (e) {}
+    if (iframe.src && iframe.src.includes('periods-manager')) {
+      iframe.contentWindow.postMessage(payload, '*');
     }
   });
 }
@@ -84,7 +68,7 @@ function postToIframe(payload) {
 var lastCurrentTaskId = null;
 
 PluginAPI.registerHeaderButton({
-  label: 'Période',
+  label: 'Periods',
   icon: 'schedule',
   onClick: function () {
     PluginAPI.showIndexHtmlAsView();
@@ -92,8 +76,8 @@ PluginAPI.registerHeaderButton({
 });
 
 PluginAPI.registerShortcut({
-  id: 'show_periode_chrono',
-  label: 'Show Période / Chrono',
+  id: 'show_periods',
+  label: 'Show Periods Manager',
   onExec: function () {
     PluginAPI.showIndexHtmlAsView();
   },
@@ -110,6 +94,8 @@ PluginAPI.registerHook(PluginAPI.Hooks.ACTION, async function (payload) {
   postToIframe({ type: 'SP_ACTION', action: action });
 
   if (!action || action.type !== '[Task] Toggle start') return;
+
+  // A running task means this toggle is a pause. Do not force another task.
   if (lastCurrentTaskId) return;
 
   try {
@@ -145,5 +131,7 @@ PluginAPI.registerHook(PluginAPI.Hooks.ACTION, async function (payload) {
         id: targetTaskId,
       });
     }
-  } catch (e) {}
+  } catch (e) {
+    // Silently fail — don't break the timer
+  }
 });

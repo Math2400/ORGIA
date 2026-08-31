@@ -1,0 +1,26 @@
+{
+  "name": "Periods Manager",
+  "id": "periods-manager",
+  "manifestVersion": 1,
+  "version": "2.1.0",
+  "minSupVersion": "14.0.0",
+  "description": "Plan your day in time-bound periods, assign tasks, and auto-start the right task. Weekly templates with daily overrides and cross-device sync.",
+  "hooks": ["action", "currentTaskChange"],
+  "permissions": [
+    "getTasks",
+    "updateTask",
+    "addTask",
+    "getAllProjects",
+    "getAllTags",
+    "showIndexHtmlAsView",
+    "openDialog",
+    "persistDataSynced",
+    "loadSyncedData",
+    "dispatchAction"
+  ],
+  "iFrame": true,
+  "sidePanel": true,
+  "type": "standard",
+  "assets": [],
+  "icon": "icon.svg"
+}

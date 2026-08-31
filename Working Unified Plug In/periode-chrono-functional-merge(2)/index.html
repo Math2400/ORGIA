@@ -1,0 +1,1790 @@
+<!DOCTYPE html>
+<html lang="fr"><head><meta charset="UTF-8"><title>Période + Chrono</title><link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&family=Outfit:wght@600;900&display=swap" rel="stylesheet"><style>*{box-sizing:border-box}html,body{margin:0;min-height:100%;background:#1e1e2e;color:#cdd6f4}body{padding:0;font-family:Inter,system-ui,sans-serif}.combined-shell{display:flex;gap:6px;padding:10px 16px 0;background:#1e1e2e;position:sticky;top:0;z-index:1000}.shell-tab{border:1px solid #45475a;background:#313244;color:#a6adc8;border-radius:10px 10px 0 0;padding:8px 16px;cursor:pointer;font:600 0.85rem Inter,system-ui,sans-serif}.shell-tab.is-active{background:#89b4fa;color:#1e1e2e}.combined-view{display:none}.combined-view.is-active{display:block}:root{--primary:#89b4fa;--primary-glow:rgba(137,180,250,0.3);--danger:#f38ba8;--warning:#f9e2af;--success:#a6e3a1;--bg:#1e1e2e;--card-bg:rgba(49,50,68,0.7);--text:#cdd6f4;--text-dim:#a6adc8;--divider:#45475a;--font-main: 'Inter',system-ui,sans-serif;--font-display: 'Outfit',sans-serif}#view-periode *,#view-periode *::before,#view-periode *::after{box-sizing:border-box;margin:0;padding:0}#view-periode{font-family:var(--font-main);background:var(--bg);color:var(--text);padding:16px;line-height:1.5;min-height:100vh;overflow-x:hidden}#view-periode .glass-bg{position:fixed;top:0;left:0;right:0;bottom:0;background:radial-gradient(circle at 50% 0%,#313244 0%,#1e1e2e 100%);z-index:-1}#view-periode h1,#view-periode h2,#view-periode h3{font-family:var(--font-display);font-weight:600}#view-periode h1{font-size:1.5rem;margin-bottom:16px;display:flex;align-items:center;gap:10px}#view-periode h2{font-size:1.1rem;margin-bottom:12px;color:var(--primary)}#view-periode h3{font-size:0.95rem;margin-bottom:8px}#view-periode .tabs{display:flex;gap:6px;margin-bottom:16px;flex-wrap:wrap;background:var(--card-bg);padding:6px;border-radius:14px;border:1px solid var(--divider);backdrop-filter:blur(8px)}#view-periode .tab-btn{flex:1;min-width:90px;padding:10px 14px;border-radius:10px;cursor:pointer;border:none;background:transparent;color:var(--text-dim);font-family:inherit;font-size:0.85rem;font-weight:600;transition:all 0.2s}#view-periode .tab-btn.active{background:var(--primary);color:#1e1e2e;box-shadow:0 0 16px var(--primary-glow)}#view-periode .tab-btn:hover:not(.active){background:rgba(255,255,255,0.05);color:var(--text)}#view-periode .tab-panel{display:none;animation:fadeIn 0.25s ease}#view-periode .tab-panel.active{display:block}@keyframes fadeIn{from{opacity:0;transform:translateY(4px)}to{opacity:1;transform:none}}#view-periode .card{background:var(--card-bg);backdrop-filter:blur(12px);border:1px solid var(--divider);border-radius:16px;padding:16px;margin-bottom:12px;box-shadow:0 4px 16px rgba(0,0,0,0.25)}#view-periode .date-selector{display:flex;gap:6px;align-items:center;margin-bottom:16px;flex-wrap:wrap;padding:10px 14px;border-radius:14px;background:var(--card-bg);border:1px solid var(--divider)}#view-periode .date-btn{padding:6px 14px;border-radius:8px;cursor:pointer;border:1px solid var(--divider);background:rgba(0,0,0,0.2);color:var(--text);font-size:0.82rem;font-weight:600;transition:all 0.15s;font-family:inherit}#view-periode .date-btn.active{background:var(--primary);color:#1e1e2e;border-color:var(--primary)}#view-periode .date-label{font-size:0.82rem;color:var(--text-dim);margin-left:auto}#view-periode input[type="text"],#view-periode input[type="time"],#view-periode input[type="date"],#view-periode input[type="search"],#view-periode select{padding:8px 12px;border-radius:10px;border:1px solid var(--divider);background:rgba(0,0,0,0.25);color:var(--text);font-family:inherit;font-size:0.9rem}#view-periode input[type="search"]{width:100%}#view-periode .form-row{display:flex;gap:10px;align-items:center;margin-bottom:10px;flex-wrap:wrap}#view-periode .form-row label{min-width:70px;font-weight:600;font-size:0.85rem;color:var(--text-dim)}#view-periode .btn{padding:8px 16px;border-radius:10px;border:1px solid var(--divider);background:var(--card-bg);color:var(--text);cursor:pointer;font-family:inherit;font-weight:600;font-size:0.85rem;transition:all 0.15s;display:inline-flex;align-items:center;gap:6px}#view-periode .btn:hover{background:rgba(255,255,255,0.08)}#view-periode .btn-primary{background:var(--primary);color:#1e1e2e;border-color:var(--primary)}#view-periode .btn-primary:hover{filter:brightness(1.05)}#view-periode .btn-success{background:var(--success);color:#1e1e2e;border-color:var(--success)}#view-periode .btn-danger{color:var(--danger);border-color:var(--danger)}#view-periode .btn-danger:hover{background:var(--danger);color:#1e1e2e}#view-periode .btn-sm{padding:4px 10px;font-size:0.78rem}#view-periode .btn-icon{padding:6px;min-width:32px;justify-content:center}#view-periode .btn-ghost{background:none;border:none;color:var(--text-dim)}#view-periode .timeline-sticky{position:sticky;top:0;z-index:50;background:linear-gradient(to bottom,var(--bg) 70%,transparent);padding-bottom:8px;margin-bottom:8px}#view-periode .timeline{position:relative;height:56px;border-radius:12px;background:rgba(0,0,0,0.25);border:1px solid var(--divider);overflow:hidden}#view-periode .timeline-block{position:absolute;top:4px;bottom:4px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:0.65rem;font-weight:700;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;padding:0 4px;cursor:pointer;transition:filter 0.2s;color:#1e1e2e}#view-periode .timeline-block:hover{filter:brightness(1.15)}#view-periode .timeline-block.is-current{box-shadow:0 0 12px var(--primary-glow);outline:2px solid #fff5}#view-periode .timeline-now{position:absolute;top:0;bottom:0;width:2px;background:var(--success);z-index:5}#view-periode .timeline-labels{display:flex;justify-content:space-between;font-size:0.7rem;color:var(--text-dim);margin-top:4px}#view-periode .daily-scroll{max-height:calc(100vh - 220px);overflow-y:auto;padding-right:4px}#view-periode .period-section{border-left:4px solid var(--divider);padding-left:12px;margin-bottom:20px;transition:border-color 0.2s}#view-periode .period-section.is-current{border-left-color:var(--success)}#view-periode .period-section.is-past{opacity:0.75}#view-periode .period-section.is-future{opacity:0.9}#view-periode .period-header{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:10px;gap:8px}#view-periode .period-time-badge{font-size:0.8rem;font-weight:700;color:var(--primary);background:rgba(137,180,250,0.12);padding:4px 10px;border-radius:8px}#view-periode .period-title-row{font-weight:700;font-size:1rem;margin-bottom:4px}#view-periode .break-message{text-align:center;padding:32px 20px;margin:24px 0;border:2px dashed var(--divider);border-radius:16px;color:var(--text-dim);background:rgba(0,0,0,0.15)}#view-periode .break-message .icon{font-size:2rem;margin-bottom:8px}#view-periode .daily-task-row{--step-color:var(--primary);display:flex;align-items:center;gap:10px;padding:10px 12px;border-radius:12px;background:var(--card-bg);border:1px solid var(--divider);margin-bottom:6px;transition:all 0.2s}#view-periode .daily-task-row:hover{border-color:var(--step-color);box-shadow:0 0 10px color-mix(in srgb,var(--step-color) 30%,transparent)}#view-periode .daily-task-row.is-done{opacity:0.5}#view-periode .daily-task-row.is-subtask{margin-left:16px;border-left:2px solid var(--divider)}#view-periode .daily-task-row.is-running{border-left:4px solid var(--step-color);background:color-mix(in srgb,var(--step-color) 10%,transparent)}#view-periode .task-info{flex:1;min-width:0}#view-periode .task-title-text{font-weight:600;font-size:0.9rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}#view-periode .task-project-label{font-size:0.72rem;color:var(--text-dim);display:flex;align-items:center;gap:5px;margin-top:2px}#view-periode .project-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0}#view-periode .task-row-actions{display:flex;gap:4px;flex-shrink:0}#view-periode .btn-task-action{width:32px;height:32px;border-radius:8px;border:1px solid var(--divider);background:rgba(0,0,0,0.2);color:var(--text);cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all 0.15s;font-size:0.85rem}#view-periode .btn-task-action.play:hover{background:var(--primary);color:#1e1e2e;border-color:var(--primary)}#view-periode .btn-task-action.done:hover{background:var(--success);color:#1e1e2e;border-color:var(--success)}#view-periode .btn-task-action:disabled{opacity:0.35;cursor:not-allowed}#view-periode .period-item{display:flex;align-items:stretch;gap:8px;padding:12px;border:1px solid var(--divider);border-radius:14px;margin-bottom:8px;background:rgba(0,0,0,0.15);transition:border-color 0.2s,box-shadow 0.2s}#view-periode .period-item:hover{border-color:var(--primary);box-shadow:0 0 0 1px var(--primary-glow) inset}#view-periode .period-item.is-active{border-color:var(--success);box-shadow:0 0 12px rgba(166,227,161,.15)}#view-periode .period-time{display:flex;flex-direction:column;align-items:center;justify-content:center;min-width:72px;font-weight:700;font-size:0.82rem;color:var(--primary);gap:2px}#view-periode .period-time .sep{font-size:0.6rem;color:var(--text-dim)}#view-periode .period-info{flex:1;min-width:0}#view-periode .period-actions{display:flex;flex-direction:column;gap:4px;justify-content:center}#view-periode .task-dropzone{min-height:44px;border:2px dashed var(--divider);border-radius:10px;padding:6px 10px;margin-top:8px;display:flex;flex-wrap:wrap;align-items:center;gap:4px;transition:border-color 0.2s,background 0.2s}#view-periode .task-dropzone.drag-over{border-color:var(--primary);background:var(--primary-glow)}#view-periode .task-dropzone .placeholder{color:var(--text-dim);font-size:0.8rem;font-style:italic}#view-periode .task-chip{display:inline-flex;align-items:center;gap:4px;padding:3px 10px;border-radius:20px;font-size:0.78rem;background:rgba(0,0,0,0.25);border:1px solid var(--divider);margin:2px;cursor:grab;--chip-color:var(--primary)}#view-periode .task-chip:hover{border-color:var(--chip-color)}#view-periode .task-chip.is-done{opacity:0.5;text-decoration:line-through}#view-periode .task-chip .remove{cursor:pointer;opacity:0.6}#view-periode .task-chip .remove:hover{opacity:1;color:var(--danger)}#view-periode .available-tasks{max-height:280px;overflow-y:auto;padding:8px;border:1px solid var(--divider);border-radius:12px;background:rgba(0,0,0,0.15)}#view-periode .available-task{padding:8px 12px;border-radius:8px;cursor:grab;font-size:0.85rem;margin-bottom:4px;background:rgba(0,0,0,0.15);transition:background 0.15s;display:flex;align-items:center;gap:6px}#view-periode .available-task:hover{background:rgba(255,255,255,0.05)}#view-periode .available-task.is-subtask{margin-left:16px;font-size:0.8rem;opacity:0.9;border-left:2px solid var(--divider);padding-left:10px}#view-periode .project-group{margin-bottom:12px}#view-periode .project-header{font-size:0.72rem;font-weight:700;text-transform:uppercase;color:var(--text-dim);margin-bottom:6px;display:flex;align-items:center;gap:6px}#view-periode .search-box{width:100%;padding:8px 12px;border-radius:10px;border:1px solid var(--divider);background:rgba(0,0,0,0.2);color:var(--text);margin-bottom:10px;font-size:0.85rem}#view-periode .task-section-header{display:flex;align-items:center;gap:8px;margin:16px 0 8px;cursor:pointer;user-select:none}#view-periode .task-count{font-size:0.72rem;padding:2px 8px;border-radius:10px;background:var(--divider);font-weight:700}#view-periode .task-section-today .task-count{background:var(--success);color:#1e1e2e}#view-periode .day-tabs{display:flex;gap:4px;margin-bottom:12px;flex-wrap:wrap}#view-periode .day-tab{flex:1;min-width:40px;text-align:center;padding:6px 4px;border-radius:8px;cursor:pointer;font-size:0.78rem;font-weight:600;background:rgba(0,0,0,0.2);border:1px solid var(--divider);color:var(--text-dim);transition:all 0.2s}#view-periode .day-tab.active{background:var(--primary);color:#1e1e2e;border-color:var(--primary)}#view-periode .badge{font-size:0.68rem;padding:2px 8px;border-radius:10px;background:var(--primary);color:#1e1e2e;font-weight:700}#view-periode .badge-accent{background:var(--success)}#view-periode .text-muted{color:var(--text-dim);font-size:0.85rem}#view-periode .empty-state{text-align:center;padding:36px 16px;color:var(--text-dim)}#view-periode .empty-state .icon{font-size:2.5rem;margin-bottom:10px}#view-periode .flex-between{display:flex;justify-content:space-between;align-items:center;gap:8px;flex-wrap:wrap}#view-periode .mt{margin-top:8px}#view-periode .mb{margin-bottom:8px}#view-periode #save-status{position:fixed;bottom:12px;right:12px;font-size:0.7rem;padding:6px 12px;border-radius:8px;background:rgba(0,0,0,0.6);backdrop-filter:blur(8px);color:var(--text-dim);pointer-events:none;opacity:0;transition:opacity 0.3s;display:flex;align-items:center;gap:6px;z-index:1000}#view-periode #save-status.active{opacity:1}#view-periode .spinner{width:10px;height:10px;border:2px solid var(--text-dim);border-top-color:transparent;border-radius:50%;animation:spin 0.8s linear infinite}@keyframes spin{to{transform:rotate(360deg)}}#view-periode .modal-overlay{position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,0.75);display:none;align-items:center;justify-content:center;z-index:2000;padding:20px;backdrop-filter:blur(4px)}#view-periode .modal-content{background:var(--bg);border:1px solid var(--divider);border-radius:20px;width:100%;max-width:420px;padding:24px;box-shadow:0 10px 40px rgba(0,0,0,0.5)}#view-periode .modal-footer{display:flex;justify-content:flex-end;gap:10px;margin-top:20px;flex-wrap:wrap}#view-periode .scope-options{display:flex;flex-direction:column;gap:8px;margin:16px 0}#view-periode .scope-option{padding:12px 14px;border-radius:12px;border:2px solid var(--divider);cursor:pointer;transition:all 0.15s;background:rgba(0,0,0,0.15)}#view-periode .scope-option:hover{border-color:var(--primary)}#view-periode .scope-option.selected{border-color:var(--primary);background:var(--primary-glow)}#view-periode .scope-option strong{display:block;margin-bottom:2px}#view-periode .scope-option span{font-size:0.82rem;color:var(--text-dim)}#view-periode::-webkit-scrollbar{width:6px}#view-periode::-webkit-scrollbar-thumb{background:var(--divider);border-radius:3px}#view-chrono:root{--primary:#89b4fa;--primary-glow:rgba(137,180,250,0.3);--danger:#f38ba8;--warning:#f9e2af;--success:#a6e3a1;--bg:#1e1e2e;--card-bg:rgba(49,50,68,0.7);--text:#cdd6f4;--text-dim:#a6adc8;--divider:#45475a;--font-main: 'Inter',system-ui,sans-serif;--font-display: 'Outfit',sans-serif}#view-chrono *,#view-chrono *::before,#view-chrono *::after{box-sizing:border-box;margin:0;padding:0}#view-chrono{font-family:var(--font-main);background:var(--bg);color:var(--text);padding:16px;line-height:1.5;overflow-x:hidden;min-height:100vh}#view-chrono .glass-bg{position:fixed;top:0;left:0;right:0;bottom:0;background:radial-gradient(circle at 50% 0%,#313244 0%,#1e1e2e 100%);z-index:-1}#view-chrono h1,#view-chrono h2,#view-chrono h3{font-family:var(--font-display);font-weight:600}#view-chrono .timer-card{background:var(--card-bg);backdrop-filter:blur(12px);border:1px solid var(--divider);border-radius:24px;padding:24px;text-align:center;box-shadow:0 8px 32px rgba(0,0,0,0.4);margin-bottom:24px;position:sticky;top:0;z-index:100}#view-chrono .session-badge{display:inline-block;padding:4px 12px;background:var(--divider);border-radius:20px;font-size:0.75rem;font-weight:700;text-transform:uppercase;letter-spacing:1px;margin-bottom:8px}#view-chrono #current-task-name{font-size:1.4rem;margin-bottom:8px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}#view-chrono .timer-digits{font-size:4.5rem;font-family:var(--font-display);font-weight:900;line-height:1;margin:12px 0;font-variant-numeric:tabular-nums;text-shadow:0 0 20px var(--primary-glow);transition:color 0.3s ease}#view-chrono .timer-digits.warning{color:var(--warning)}#view-chrono .timer-digits.danger{color:var(--danger);animation:pulse-danger 1s infinite}@keyframes pulse-danger{0%{opacity:1}50%{opacity:0.7}100%{opacity:1}}#view-chrono .progress-container{height:6px;background:var(--divider);border-radius:3px;overflow:hidden;margin:16px 0}#view-chrono .progress-bar{height:100%;background:var(--primary);width:0%;transition:width 1s linear;box-shadow:0 0 10px var(--primary-glow)}#view-chrono .controls{display:flex;justify-content:center;align-items:center;gap:16px;margin-top:16px}#view-chrono .btn-ctrl{background:none;border:none;color:var(--text);cursor:pointer;padding:8px;border-radius:50%;transition:all 0.2s;display:flex;align-items:center;justify-content:center}#view-chrono .btn-ctrl:hover{background:rgba(255,255,255,0.1);transform:scale(1.1)}#view-chrono .btn-ctrl:active{transform:scale(0.95)}#view-chrono .btn-main{width:64px;height:64px;background:var(--primary);color:#1e1e2e;box-shadow:0 0 20px var(--primary-glow)}#view-chrono .btn-main:hover{background:#b4befe}#view-chrono .btn-adj{font-size:0.8rem;font-weight:700;padding:6px 10px;border-radius:8px;background:var(--divider)}#view-chrono .btn-adj.plus{color:var(--success)}#view-chrono .btn-adj.minus{color:var(--danger)}#view-chrono .section-header{display:flex;justify-content:space-between;align-items:center;margin:24px 0 12px}#view-chrono .sequence-list{min-height:60px;border:2px dashed var(--divider);border-radius:16px;padding:8px;margin-bottom:24px;background:rgba(0,0,0,0.1)}#view-chrono .sequence-list.drag-over{border-color:var(--primary);background:var(--primary-glow)}#view-chrono .task-item{background:var(--card-bg);border:1px solid var(--divider);border-radius:12px;padding:12px;margin-bottom:8px;display:flex;align-items:center;gap:12px;cursor:grab;transition:all 0.2s}#view-chrono .task-item{--step-color:var(--primary)}#view-chrono .task-item:hover{transform:translateX(4px);border-color:var(--step-color);box-shadow:0 0 10px color-mix(in srgb,var(--step-color) 35%,transparent)}#view-chrono .task-item.active{border-left:4px solid var(--step-color);background:color-mix(in srgb,var(--step-color) 12%,transparent)}#view-chrono .task-item .task-content{cursor:pointer}#view-chrono .task-item.dragging{opacity:0.5}#view-chrono .task-drag-handle{color:var(--text-dim);cursor:grab}#view-chrono .task-content{flex:1;min-width:0}#view-chrono .task-title{font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font-size:0.9rem}#view-chrono .task-duration-label{font-size:0.75rem;color:var(--text-dim)}#view-chrono .task-actions{display:flex;gap:4px}#view-chrono .btn-tiny{background:none;border:none;color:var(--text-dim);cursor:pointer;padding:4px;border-radius:4px}#view-chrono .btn-tiny:hover{color:var(--danger);background:rgba(243,139,168,0.1)}#view-chrono .source-lists{display:flex;flex-direction:column;gap:16px}#view-chrono .list-container{background:var(--card-bg);border-radius:16px;padding:16px;border:1px solid var(--divider)}#view-chrono .list-container h3{font-size:1rem;margin-bottom:12px;display:flex;align-items:center;gap:8px}#view-chrono .task-count-badge{font-size:0.7rem;padding:2px 8px;background:var(--divider);border-radius:10px;color:var(--text-dim)}#view-chrono .search-box{width:100%;padding:8px 12px;border-radius:8px;border:1px solid var(--divider);background:var(--bg);color:var(--text);margin-bottom:12px;font-size:0.85rem}#view-chrono .project-group{margin-bottom:12px}#view-chrono .project-header{font-size:0.75rem;font-weight:700;text-transform:uppercase;color:var(--text-dim);margin-bottom:6px;display:flex;align-items:center;gap:6px}#view-chrono .project-dot{width:8px;height:8px;border-radius:50%}#view-chrono .available-task{padding:8px 12px;border-radius:8px;background:rgba(0,0,0,0.2);margin-bottom:4px;font-size:0.85rem;cursor:pointer;display:flex;flex-direction:column;gap:4px;transition:background 0.2s}#view-chrono .available-task:hover{background:rgba(255,255,255,0.05)}#view-chrono .task-tags{display:flex;flex-wrap:wrap;gap:4px}#view-chrono .task-tag{font-size:0.6rem;padding:1px 6px;border-radius:4px;background:var(--divider);color:var(--text)}#view-chrono .modal-overlay{position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,0.8);display:none;align-items:center;justify-content:center;z-index:2000;backdrop-filter:blur(4px)}#view-chrono .modal-content{background:var(--bg);border:1px solid var(--divider);border-radius:20px;padding:24px;width:90%;max-width:360px;box-shadow:0 10px 40px rgba(0,0,0,0.5)}#view-chrono .modal-content h2{margin-bottom:16px}#view-chrono .duration-input-wrapper{display:flex;gap:8px;margin:16px 0}#view-chrono .duration-input-wrapper input{flex:1;padding:12px;border-radius:10px;border:1px solid var(--divider);background:var(--card-bg);color:var(--text);font-size:1.2rem;text-align:center}#view-chrono .modal-footer{display:flex;justify-content:flex-end;gap:12px}#view-chrono .btn{padding:8px 16px;border-radius:8px;cursor:pointer;font-weight:600;border:none}#view-chrono .btn-primary{background:var(--primary);color:#1e1e2e}#view-chrono .btn-ghost{background:none;color:var(--text-dim)}#view-chrono .hidden{display:none !important}#view-chrono .flex-row{display:flex;align-items:center;gap:8px}#view-chrono .empty-placeholder{text-align:center;color:var(--text-dim);padding:20px;font-style:italic;font-size:0.85rem}#view-chrono .quick-add-box{display:flex;flex-direction:column;gap:4px;justify-content:center}#view-chrono .btn-xs{font-size:0.65rem;padding:4px 8px;font-weight:700;border-radius:6px}#view-chrono .loop-toggle{display:flex;align-items:center;gap:8px;font-size:0.8rem;color:var(--text-dim);cursor:pointer;user-select:none}#view-chrono .loop-toggle input{accent-color:var(--primary);width:16px;height:16px;cursor:pointer}#view-chrono .subtask-item{margin-left:16px;border-left:2px solid var(--divider);padding-left:8px}#view-chrono .subtask-item .available-task{font-size:0.8rem;opacity:0.9}</style></head><body><nav id="app-switcher" class="combined-shell" aria-label="Période et Chrono"><button class="shell-tab is-active" data-view="periode" onclick="AppShell.switchTo('periode')">Période</button><button class="shell-tab" data-view="chrono" onclick="AppShell.switchTo('chrono')">Chrono</button></nav><main id="view-periode" class="combined-view is-active"><div class="glass-bg"></div><div id="save-status"></div><h1>⏰ Periods Manager</h1><div class="date-selector" id="date-selector"><button class="date-btn active" onclick="setDateToday()">📅 Aujourd'hui</button>
+  <button class="date-btn" onclick="setDateTomorrow()">➡️ Demain</button>
+  <input type="date" id="custom-date" style="width:auto; min-width:140px; font-size:0.82rem;" onchange="setDateCustom(this.value)" />
+  <span class="date-label" id="date-label"></span></div><div class="tabs"><button class="tab-btn active" data-tab="daily" onclick="switchTab('daily')">Daily View</button>
+  <button class="tab-btn" data-tab="schedule" onclick="switchTab('schedule')">Schedule</button>
+  <button class="tab-btn" data-tab="template" onclick="switchTab('template')">Template</button></div><div id="daily" class="tab-panel active"><div class="timeline-sticky"><div id="daily-timeline"></div></div><div id="daily-scroll" class="daily-scroll"></div></div><div id="schedule" class="tab-panel"><div id="schedule-content"></div></div><div id="template" class="tab-panel"><div id="template-list"></div><div id="template-editor" style="display:none"></div></div><div id="modal-period" class="modal-overlay"><div class="modal-content"><h2 id="m-period-title">Ajouter une période</h2><div id="scope-selector" class="scope-options" style="display:none"><div class="scope-option selected" data-scope="today" onclick="selectScope('today')"><strong>📅 Uniquement ce jour</strong>
+        <span>Modification ponctuelle, ne modifie pas le template.</span></div><div class="scope-option" data-scope="template" onclick="selectScope('template')"><strong>📋 Template actif</strong>
+        <span id="scope-template-name">Sera répété chaque semaine pour ce jour.</span></div></div><div class="form-row"><label>Titre</label><input type="text" id="p-title" placeholder="Deep Work" style="flex:1" /></div><div class="form-row"><label>Début</label><input type="time" id="p-start" /></div><div class="form-row"><label>Fin</label><input type="time" id="p-end" /></div><div class="modal-footer"><button class="btn btn-ghost" onclick="closePeriodModal()">Annuler</button>
+      <button class="btn btn-primary" onclick="savePeriod()">Enregistrer</button></div></div></div><div id="modal-tt" class="modal-overlay"><div class="modal-content"><h2>Nouveau template</h2><div class="form-row"><label>Nom</label><input type="text" id="m-tt-name" placeholder="Semaine cours" style="flex:1" /></div><div class="modal-footer"><button class="btn btn-ghost" onclick="closeTTModal()">Annuler</button>
+      <button class="btn btn-primary" onclick="createTimetable()">Créer</button></div></div></div></main><main id="view-chrono" class="combined-view">
+
+<div class="glass-bg"></div>
+
+<div id="app"><div class="timer-card" id="timer-card"><button onclick="ui.toggleCollapse()" style="position:absolute; top: 16px; right: 16px; background: none; border: none; color: var(--text-dim); cursor: pointer;">
+      <svg id="icon-collapse" width="24" height="24" viewBox="0 0 24 24" fill="currentColor"><path d="M12 8l-6 6 1.41 1.41L12 10.83l4.59 4.58L18 14z"/></svg>
+      <svg id="icon-expand" class="hidden" width="24" height="24" viewBox="0 0 24 24" fill="currentColor"><path d="M16.59 8.59L12 13.17 7.41 8.59 6 10l6 6 6-6z"/></svg>
+    </button><div id="session-title" class="session-badge">Chrono</div><div id="total-time-display" style="font-size: 0.8rem; color: var(--text-dim); margin-bottom: 8px;">Total: 0s / 0s</div><div id="timer-card-full"><div id="current-task-name">No task selected</div><div id="timer-display" class="timer-digits">00:00</div><div class="progress-container"><div id="progress-bar" class="progress-bar"></div></div><div class="controls" style="margin-bottom: 12px;"><button onclick="adjustTime(-60)" class="btn-adj minus">- 1m</button>
+        <button onclick="adjustTime(-10)" class="btn-adj minus">- 10s</button>
+        <button onclick="adjustTime(10)" class="btn-adj plus">+ 10s</button>
+        <button onclick="adjustTime(60)" class="btn-adj plus">+ 1m</button></div><div class="controls"><button id="btn-prev" onclick="timer.prev()" class="btn-ctrl" title="Previous">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor"><path d="M6 6h2v12H6zm3.5 6l8.5 6V6z"/></svg>
+        </button>
+        
+        <button id="btn-play-pause" onclick="timer.toggle()" class="btn-ctrl btn-main">
+          <svg id="play-icon" width="32" height="32" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
+          <svg id="pause-icon" class="hidden" width="32" height="32" viewBox="0 0 24 24" fill="currentColor"><path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/></svg>
+        </button>
+
+        <button id="btn-next" onclick="timer.next()" class="btn-ctrl" title="Next">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor"><path d="M6 18l8.5-6L6 6v12zM16 6v12h2V6h-2z"/></svg>
+        </button>
+
+        <button onclick="timer.reset()" class="btn-ctrl" title="Reset">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M23 4v6h-6M1 20v-6h6"/><path d="M3.51 9a9 9 0 0114.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0020.49 15"/></svg>
+        </button></div><div style="margin-top: 16px;"><button class="btn btn-primary" style="width: 100%; border-radius: 12px;" onclick="ui.prepareUnplannedTask()">
+          ✨ Add Unplanned Task (Insert Next)
+        </button></div></div><div id="timer-card-slim" class="hidden" style="display:flex; justify-content:space-between; align-items:center; margin-top: 8px;"><div style="flex: 1; min-width: 0; display:flex; flex-direction:column; align-items: flex-start; margin-right: 8px;"><div id="slim-task-name" style="font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; width: 100%; text-align: left;">No task selected</div><div id="slim-timer-display" style="font-family: var(--font-display); font-size: 1.5rem; font-weight: 900; color: var(--primary);">00:00</div></div><div style="display:flex; gap: 4px;"><button onclick="timer.prev()" class="btn-ctrl" style="padding: 4px;"><svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor"><path d="M6 6h2v12H6zm3.5 6l8.5 6V6z"/></svg></button>
+        <button onclick="timer.toggle()" class="btn-ctrl" style="padding: 4px; color: var(--primary);">
+          <svg id="slim-play-icon" width="32" height="32" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
+          <svg id="slim-pause-icon" class="hidden" width="32" height="32" viewBox="0 0 24 24" fill="currentColor"><path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/></svg>
+        </button>
+        <button onclick="timer.next()" class="btn-ctrl" style="padding: 4px;"><svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor"><path d="M6 18l8.5-6L6 6v12zM16 6v12h2V6h-2z"/></svg></button></div>
+    </div>
+  </div>
+
+  
+  <div class="section-header">
+    <h3>Planned Sequence</h3>
+    <div style="display:flex; gap: 8px; align-items: center;">
+      <label class="loop-toggle" title="Restart sequence from the beginning when finished">
+        <input type="checkbox" id="loop-infinite" onchange="ui.toggleLoop(this.checked)">
+        Loop ∞
+      </label>
+      <button class="btn btn-ghost" onclick="ui.prepareCustomTask()">+ Add Custom</button>
+      <button class="btn btn-adj" onclick="timer.clearSequence()">Clear All</button>
+    </div>
+  </div>
+  <div id="sequence-list" class="sequence-list" 
+       ondragover="ui.onDragOver(event)" 
+       ondrop="ui.onDrop(event, 'sequence')" 
+       ondragleave="ui.onDragLeave(event)">
+    <div class="empty-placeholder">Drag tasks here to plan your sequence</div>
+  </div>
+
+  
+  <div class="source-lists">
+    
+    <div class="list-container">
+      <h3>📌 Today's Tasks <span id="count-today" class="task-count-badge">0</span></h3>
+      <input type="search" class="search-box" placeholder="Filter today's tasks..." oninput="ui.filterTasks('today', this.value)">
+      <div id="list-today"></div>
+    </div>
+
+    
+    <div class="list-container">
+      <h3>📂 All Tasks <span id="count-all" class="task-count-badge">0</span></h3>
+      <input type="search" class="search-box" placeholder="Search all tasks..." oninput="ui.filterTasks('all', this.value)">
+      <div id="list-all"></div>
+    </div>
+  </div>
+</div>
+
+
+<div id="modal-duration" class="modal-overlay">
+  <div class="modal-content">
+    <h2 id="modal-task-title">Task Duration</h2>
+    <div id="custom-title-wrapper" class="hidden" style="margin-bottom: 16px;">
+      <p class="text-dim">Task Title</p>
+      <input type="text" id="input-title" placeholder="My Custom Task" style="width:100%; padding: 12px; border-radius: 10px; border: 1px solid var(--divider); background: var(--card-bg); color: var(--text); font-size: 1.1rem; margin-top: 4px;">
+    </div>
+    <p class="text-dim">Enter duration (e.g., 10, 30s, 1.5h)</p>
+    <div class="duration-input-wrapper">
+      <input type="text" id="input-duration" placeholder="10" autofocus>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-ghost" onclick="ui.closeModal()">Cancel</button>
+      <button id="modal-confirm-btn" class="btn btn-primary" onclick="ui.confirmTaskAdd()">Add to Chrono</button>
+    </div>
+  </div>
+</div>
+
+<audio id="audio-beep" src="https://assets.mixkit.co/active_storage/sfx/2869/2869-preview.mp3" preload="auto"></audio>
+
+</main><script>window.CombinedRuntime={ready:function(fn){function run(){try{var r=fn();if(r&&r.catch)r.catch(function(e){console.error('Initialization failed:',e)})}catch(e){console.error('Initialization failed:',e)}}if(typeof PluginAPI==='undefined'){setTimeout(function(){window.CombinedRuntime.ready(fn)},100);return}if(PluginAPI.onReady)PluginAPI.onReady(run);else run()}};
+window.CombinedStore=(function(){var envelope={periods:null,chrono:null},loaded=false,loading=null,saving=null,queued=false;function parse(raw){var x=raw;if(typeof x==='string')x=JSON.parse(x);if(!x||typeof x!=='object')return;if(x._unified||x.__combined){envelope.periods=x.periods||null;envelope.chrono=x.chrono||null;return}if(x.timetables||x.dailyOverrides||x.activeTimetableId||x.syncLog)envelope.periods=x;if(Object.prototype.hasOwnProperty.call(x,'steps'))envelope.chrono=x}async function load(){if(loaded)return envelope;if(!loading)loading=(async function(){var raw=await PluginAPI.loadSyncedData();if(raw)parse(raw);loaded=true;return envelope})().catch(function(e){loading=null;throw e});return loading}async function reload(){loaded=false;loading=null;return load()}async function flush(){if(saving){queued=true;return saving}var payload=JSON.stringify({_unified:true,periods:envelope.periods,chrono:envelope.chrono});saving=PluginAPI.persistDataSynced(payload).finally(function(){saving=null;if(queued){queued=false;return flush()}});return saving}async function savePart(key,value){await load();envelope[key]=value;return flush()}return{load:load,reload:reload,loadPeriods:async function(){return(await load()).periods},loadChrono:async function(){return(await load()).chrono},savePeriods:function(v){return savePart('periods',v)},saveChrono:function(v){return savePart('chrono',v)}}})();
+window.CombinedTaskContext=(function(){var value=null,promise=null;async function load(force){if(value&&!force)return value;if(!promise)promise=Promise.all([PluginAPI.getTasks(),PluginAPI.getAllProjects?PluginAPI.getAllProjects():Promise.resolve([]),PluginAPI.getAllTags?PluginAPI.getAllTags():Promise.resolve([])]).then(function(a){value={tasks:a[0]||[],projects:a[1]||[],tags:a[2]||[]};return value}).catch(function(e){promise=null;throw e});return promise}async function refresh(){value=null;promise=null;return load(false)}return{load:load,refresh:refresh}})();
+window.ChronoBridge={_queue:null,replaceSequence:function(steps){if(window.timer&&window.timer.replaceSequenceFromPeriod)window.timer.replaceSequenceFromPeriod(steps);else this._queue=steps}};
+
+// ── State ────────────────────────────────────────────────────────────────────
+var DATA_VERSION = 2;
+var data = { version: 2, deviceId: null, activeTimetableId: null, timetables: {}, dailyOverrides: {}, syncLog: [] };
+var allTasks = [];
+var allProjects = [];
+var currentTaskId = null;
+var currentPlanningDate = null;
+var editingTimetableId = null;
+var editingDayIndex = 0;
+var modalPeriodIdx = null;
+var modalTTPeriodIdx = null;
+var modalContext = 'schedule'; // schedule | template
+var periodSaveScope = 'today';
+var taskSearchQuery = '';
+var allTasksSectionCollapsed = false;
+var draggedTaskId = null;
+var DAYS = ['Lun','Mar','Mer','Jeu','Ven','Sam','Dim'];
+var saveTimeout = null;
+var isSaving = false;
+var needsSave = false;
+var dailyScrollInitialized = false;
+
+// ── Date helpers ─────────────────────────────────────────────────────────────
+function planningDateStr() {
+  var d = currentPlanningDate || new Date();
+  return d.getFullYear() + '-' + String(d.getMonth()+1).padStart(2,'0') + '-' + String(d.getDate()).padStart(2,'0');
+}
+function todayStr() {
+  var d = new Date();
+  return d.getFullYear() + '-' + String(d.getMonth()+1).padStart(2,'0') + '-' + String(d.getDate()).padStart(2,'0');
+}
+function tomorrowStr() {
+  var d = new Date(); d.setDate(d.getDate()+1);
+  return d.getFullYear() + '-' + String(d.getMonth()+1).padStart(2,'0') + '-' + String(d.getDate()).padStart(2,'0');
+}
+function dayIndex(d) { return (d.getDay() + 6) % 7; }
+function parseTime(s) { var p = s.split(':'); return parseInt(p[0],10)*60 + parseInt(p[1],10); }
+function fmtTime(mins) { return String(Math.floor(mins/60)).padStart(2,'0') + ':' + String(mins%60).padStart(2,'0'); }
+function uid() { return Date.now().toString(36) + Math.random().toString(36).substr(2,6); }
+function escHtml(s) { if (!s) return ''; var t = document.createElement('div'); t.textContent = s; return t.innerHTML; }
+function escAttr(s) { if (!s) return ''; return String(s).replace(/"/g,'&quot;').replace(/'/g,'&#39;'); }
+
+function formatDateLabel(dateStr) {
+  if (dateStr === todayStr()) return "Aujourd'hui — " + dateStr;
+  if (dateStr === tomorrowStr()) return 'Demain — ' + dateStr;
+  var d = new Date(dateStr + 'T12:00:00');
+  var names = ['Dimanche','Lundi','Mardi','Mercredi','Jeudi','Vendredi','Samedi'];
+  return names[d.getDay()] + ' — ' + dateStr;
+}
+
+function setDateToday() { currentPlanningDate = new Date(); document.getElementById('custom-date').value = ''; updateDateSelector(); refreshCurrentTab(); dailyScrollInitialized = false; }
+function setDateTomorrow() { var d = new Date(); d.setDate(d.getDate()+1); currentPlanningDate = d; document.getElementById('custom-date').value = ''; updateDateSelector(); refreshCurrentTab(); dailyScrollInitialized = false; }
+function setDateCustom(val) { if (!val) return; currentPlanningDate = new Date(val+'T12:00:00'); updateDateSelector(); refreshCurrentTab(); dailyScrollInitialized = false; }
+
+function updateDateSelector() {
+  var ds = planningDateStr(), today = todayStr(), tomorrow = tomorrowStr();
+  document.querySelectorAll('.date-btn').forEach(function(b, i) {
+    b.classList.toggle('active', (i === 0 && ds === today) || (i === 1 && ds === tomorrow));
+  });
+  document.getElementById('date-label').textContent = formatDateLabel(ds);
+  if (ds !== today && ds !== tomorrow) document.getElementById('custom-date').value = ds;
+}
+
+// ── Sync log & persistence ───────────────────────────────────────────────────
+function loadDeviceId() {
+  try {
+    var stored = localStorage.getItem('pm_deviceId');
+    if (stored) data.deviceId = stored;
+  } catch(e) {}
+  if (!data.deviceId) {
+    data.deviceId = 'dev_' + uid();
+    try { localStorage.setItem('pm_deviceId', data.deviceId); } catch(e) {}
+  }
+}
+
+function recordOp(op, payload) {
+  if (!data.syncLog) data.syncLog = [];
+  var entry = { id: uid(), ts: Date.now(), deviceId: data.deviceId, op: op, payload: JSON.parse(JSON.stringify(payload)) };
+  data.syncLog.push(entry);
+  if (data.syncLog.length > 800) data.syncLog = data.syncLog.slice(-600);
+  return entry;
+}
+
+function applyOpEntry(entry) {
+  var p = entry.payload || {};
+  switch (entry.op) {
+    case 'MIGRATE_SNAPSHOT':
+      data.activeTimetableId = p.activeTimetableId || null;
+      data.timetables = p.timetables || {};
+      data.dailyOverrides = p.dailyOverrides || {};
+      break;
+    case 'SET_ACTIVE_TIMETABLE':
+      data.activeTimetableId = p.id;
+      break;
+    case 'CLEAR_ACTIVE_TIMETABLE':
+      data.activeTimetableId = null;
+      break;
+    case 'UPSERT_TIMETABLE':
+      data.timetables[p.id] = p.timetable;
+      break;
+    case 'DELETE_TIMETABLE':
+      delete data.timetables[p.id];
+      if (data.activeTimetableId === p.id) data.activeTimetableId = null;
+      break;
+    case 'SET_TEMPLATE_DAY_PERIODS':
+      if (!data.timetables[p.templateId]) break;
+      if (!data.timetables[p.templateId].days) data.timetables[p.templateId].days = {};
+      data.timetables[p.templateId].days[p.dayIndex] = { periods: p.periods };
+      break;
+    case 'SET_DAILY_PERIODS':
+      if (!data.dailyOverrides) data.dailyOverrides = {};
+      data.dailyOverrides[p.dateStr] = { periods: p.periods };
+      break;
+    case 'DELETE_DAILY_OVERRIDE':
+      if (data.dailyOverrides) delete data.dailyOverrides[p.dateStr];
+      break;
+  }
+}
+
+function mutate(op, payload) {
+  applyOpEntry({ op: op, payload: payload });
+  recordOp(op, payload);
+  saveData();
+}
+
+function migrateData(parsed) {
+  if (!parsed) parsed = {};
+  if (!parsed.timetables) parsed.timetables = {};
+  if (!parsed.dailyOverrides) parsed.dailyOverrides = {};
+  if (!parsed.syncLog) parsed.syncLog = [];
+  loadDeviceId();
+  parsed.deviceId = parsed.deviceId || data.deviceId;
+  parsed.version = DATA_VERSION;
+  if (parsed.syncLog.length === 0 && (Object.keys(parsed.timetables).length || Object.keys(parsed.dailyOverrides).length)) {
+    parsed.syncLog.push({
+      id: uid(), ts: Date.now(), deviceId: parsed.deviceId,
+      op: 'MIGRATE_SNAPSHOT',
+      payload: {
+        activeTimetableId: parsed.activeTimetableId,
+        timetables: parsed.timetables,
+        dailyOverrides: parsed.dailyOverrides
+      }
+    });
+  }
+  return parsed;
+}
+
+function mergeRemoteData(remote) {
+  if (!remote || !remote.syncLog || !remote.syncLog.length) return false;
+  var known = {};
+  (data.syncLog || []).forEach(function(e) { known[e.id] = true; });
+  var newOps = remote.syncLog.filter(function(e) { return !known[e.id]; });
+  if (!newOps.length) return false;
+  newOps.sort(function(a,b) { return a.ts - b.ts; });
+  newOps.forEach(function(entry) {
+    applyOpEntry(entry);
+    data.syncLog.push(entry);
+  });
+  data.syncLog.sort(function(a,b) { return a.ts - b.ts; });
+  return true;
+}
+
+async function executeSave() {
+  if (isSaving) { needsSave = true; return; }
+  isSaving = true; needsSave = false;
+  showSaveStatus('Sauvegarde…', true);
+  try {
+    data.version = DATA_VERSION;
+    await CombinedStore.savePeriods(data);
+    showSaveStatus('Sauvegardé ✓', false);
+  } catch(e) {
+    console.error('Save failed:', e);
+    showSaveStatus('Nouvelle tentative…', true);
+    needsSave = true;
+  }
+  setTimeout(function() { isSaving = false; if (needsSave) executeSave(); }, 1100);
+}
+
+function saveData() {
+  showSaveStatus('Sauvegarde…', true);
+  if (saveTimeout) clearTimeout(saveTimeout);
+  saveTimeout = setTimeout(executeSave, 200);
+}
+
+function showSaveStatus(text, spinning) {
+  var el = document.getElementById('save-status');
+  el.innerHTML = (spinning ? '<div class="spinner"></div>' : '') + '<span>' + text + '</span>';
+  el.classList.add('active');
+  if (!spinning) setTimeout(function() { el.classList.remove('active'); }, 2000);
+}
+
+async function loadDataFromStore() {
+  try {
+    var loaded = await CombinedStore.loadPeriods();
+    if (loaded) data = migrateData(loaded);
+  } catch(e) { console.error('Load failed:', e); migrateData(data); }
+}
+
+async function loadTasks() {
+  try {
+    var taskContext = await CombinedTaskContext.load();
+    allTasks = taskContext.tasks;
+    if (PluginAPI.getAllProjects) allProjects = taskContext.projects;
+  } catch(e) { allTasks = []; allProjects = []; }
+}
+
+// ── Period data access ───────────────────────────────────────────────────────
+function getEffectivePeriodsForDate(dateStr) {
+  if (data.dailyOverrides && data.dailyOverrides[dateStr]) return (data.dailyOverrides[dateStr].periods || []).slice();
+  if (data.activeTimetableId && data.timetables[data.activeTimetableId]) {
+    var tt = data.timetables[data.activeTimetableId];
+    var d = new Date(dateStr + 'T12:00:00');
+    var dow = dayIndex(d);
+    if (tt.days && tt.days[dow] && tt.days[dow].periods) return tt.days[dow].periods.slice();
+  }
+  return [];
+}
+
+function getEffectivePeriods() { return getEffectivePeriodsForDate(planningDateStr()); }
+function isDateOverridden(dateStr) { return !!(data.dailyOverrides && data.dailyOverrides[dateStr]); }
+
+function setDailyPeriods(dateStr, periods) {
+  mutate('SET_DAILY_PERIODS', { dateStr: dateStr, periods: periods });
+}
+
+function setTemplateDayPeriods(templateId, dayIndex, periods) {
+  mutate('SET_TEMPLATE_DAY_PERIODS', { templateId: templateId, dayIndex: dayIndex, periods: periods });
+}
+
+function getProjectColor(projectId) {
+  var p = allProjects.find(function(x) { return x.id === projectId; });
+  return (p && p.theme && p.theme.primary) ? p.theme.primary : '#89b4fa';
+}
+
+function getTaskProjectId(task) {
+  if (!task) return null;
+  if (task.projectId) return task.projectId;
+  if (task.parentId) {
+    var parent = allTasks.find(function(t) { return t.id === task.parentId; });
+    return parent ? parent.projectId : null;
+  }
+  return null;
+}
+
+function getProjectName(projectId) {
+  if (!projectId) return 'Inbox';
+  var p = allProjects.find(function(x) { return x.id === projectId; });
+  return p ? p.title : 'Inbox';
+}
+
+function getTaskById(id) { return allTasks.find(function(t) { return t.id === id; }); }
+
+function resolvePeriodTasks(period) {
+  var result = [];
+  if (!period || !period.taskIds) return result;
+  period.taskIds.forEach(function(tid) {
+    var t = getTaskById(tid);
+    if (t) result.push(t);
+  });
+  return result;
+}
+
+function findCurrentPeriodIndex(periods, nowMins) {
+  for (var i = 0; i < periods.length; i++) {
+    var s = parseTime(periods[i].startTime);
+    var e = parseTime(periods[i].endTime);
+    if (nowMins >= s && nowMins < e) return i;
+  }
+  return -1;
+}
+
+// ── Task actions (SP integration) ────────────────────────────────────────────
+async function startTask(taskId) {
+  if (!taskId || typeof PluginAPI === 'undefined') return;
+  PluginAPI.dispatchAction({ type: '[Task] SetCurrentTask', id: taskId });
+  currentTaskId = taskId;
+  refreshCurrentTab();
+}
+
+async function completeTask(taskId) {
+  if (!taskId || typeof PluginAPI === 'undefined') return;
+  try {
+    await PluginAPI.updateTask(taskId, { isDone: true });
+    allTasks = (await CombinedTaskContext.refresh()).tasks;
+    refreshCurrentTab();
+  } catch(e) { console.error('Complete failed', e); }
+}
+
+// ── Tabs ─────────────────────────────────────────────────────────────────────
+function switchTab(tabId) {
+  editingTimetableId = null;
+  modalPeriodIdx = null;
+  document.querySelectorAll('.tab-btn').forEach(function(b) {
+    b.classList.toggle('active', b.getAttribute('data-tab') === tabId);
+  });
+  document.querySelectorAll('.tab-panel').forEach(function(p) {
+    p.classList.toggle('active', p.id === tabId);
+  });
+  document.getElementById('template-list').style.display = 'block';
+  document.getElementById('template-editor').style.display = 'none';
+  if (tabId === 'daily') { dailyScrollInitialized = false; renderDailyView(); }
+  else if (tabId === 'schedule') renderSchedule();
+  else if (tabId === 'template') renderTemplateList();
+}
+
+function refreshCurrentTab() {
+  var active = document.querySelector('.tab-panel.active');
+  if (!active) return;
+  if (active.id === 'daily') renderDailyView();
+  else if (active.id === 'schedule') renderSchedule();
+  else if (active.id === 'template') {
+    if (editingTimetableId) renderTemplateEditor();
+    else renderTemplateList();
+  }
+}
+
+// ── Daily View ───────────────────────────────────────────────────────────────
+function renderDailyTimeline(periods, nowMins, isToday) {
+  var html = '<div class="timeline">';
+  if (isToday) html += '<div class="timeline-now" style="left:' + (nowMins/14.4) + '%"></div>';
+  var currentIdx = isToday ? findCurrentPeriodIndex(periods, nowMins) : -1;
+  for (var i = 0; i < periods.length; i++) {
+    var p = periods[i];
+    var start = parseTime(p.startTime) / 14.4;
+    var width = (parseTime(p.endTime) / 14.4) - start;
+    var cls = i === currentIdx ? ' is-current' : '';
+    html += '<div class="timeline-block'+cls+'" style="left:'+start+'%;width:'+width+'%;background:var(--primary)" title="'+escAttr(p.title)+'">'+escHtml(p.title)+'</div>';
+  }
+  html += '</div><div class="timeline-labels"><span>00:00</span><span>06:00</span><span>12:00</span><span>18:00</span><span>23:59</span></div>';
+  return html;
+}
+
+function renderDailyTaskRow(task, isSubtask) {
+  if (!task) return '';
+  var pid = getTaskProjectId(task);
+  var color = getProjectColor(pid);
+  var pname = getProjectName(pid);
+  var done = task.isDone;
+  var running = currentTaskId === task.id;
+  var html = '<div class="daily-task-row'+(done?' is-done':'')+(isSubtask?' is-subtask':'')+(running?' is-running':'')+'" style="--step-color:'+color+'">';
+  html += '<div class="task-info"><div class="task-title-text">'+(isSubtask?'↳ ':'')+escHtml(task.title)+'</div>';
+  html += '<div class="task-project-label"><span class="project-dot" style="background:'+color+'"></span>'+escHtml(pname)+'</div></div>';
+  html += '<div class="task-row-actions">';
+  html += '<button class="btn-task-action play" title="Lancer" '+(done?'disabled':'')+' onclick="startTask(\''+task.id+'\')">▶</button>';
+  html += '<button class="btn-task-action done" title="Valider" '+(done?'disabled':'')+' onclick="completeTask(\''+task.id+'\')">✓</button>';
+  html += '</div></div>';
+
+  if (!isSubtask && task.subTaskIds && task.subTaskIds.length) {
+    task.subTaskIds.forEach(function(sid) {
+      var sub = getTaskById(sid);
+      if (sub && !sub.isDone) html += renderDailyTaskRow(sub, true);
+    });
+  }
+  return html;
+}
+
+function renderPeriodSection(period, idx, status, nowMins) {
+  var tasks = resolvePeriodTasks(period);
+  var html = '<div class="period-section is-'+status+'" id="period-section-'+idx+'">';
+  html += '<div class="period-header"><div>';
+  html += '<div class="period-time-badge">'+period.startTime+' — '+period.endTime+'</div>';
+  html += '<div class="period-title-row">'+escHtml(period.title);
+  if (status === 'current') html += ' <span class="badge badge-accent">MAINTENANT</span>';
+  html += '</div></div></div>';
+
+  if (tasks.length === 0) {
+    html += '<p class="text-muted" style="padding:8px 0">Aucune tâche assignée.</p>';
+  } else {
+    tasks.forEach(function(t) { html += renderDailyTaskRow(t, !!t.parentId); });
+  }
+  html += '</div>';
+  return html;
+}
+
+function renderDailyView() {
+  var ds = planningDateStr();
+  var isToday = ds === todayStr();
+  var periods = getEffectivePeriods();
+  periods.sort(function(a,b) { return parseTime(a.startTime) - parseTime(b.startTime); });
+
+  var now = new Date();
+  var nowMins = isToday ? now.getHours()*60 + now.getMinutes() : -1;
+  var currentIdx = isToday ? findCurrentPeriodIndex(periods, nowMins) : -1;
+
+  document.getElementById('daily-timeline').innerHTML = renderDailyTimeline(periods, nowMins, isToday);
+
+  var scrollHtml = '';
+  if (periods.length === 0) {
+    scrollHtml = '<div class="empty-state"><div class="icon">📅</div><p>Aucune période pour '+formatDateLabel(ds)+'.</p><p class="text-muted mt">Créez-en dans l\'onglet Schedule.</p></div>';
+  } else {
+    var pastHtml = '', currentHtml = '', futureHtml = '';
+    for (var i = 0; i < periods.length; i++) {
+      var status = i < currentIdx ? 'past' : (i === currentIdx ? 'current' : 'future');
+      var section = renderPeriodSection(periods[i], i, status, nowMins);
+      if (status === 'past') pastHtml += section;
+      else if (status === 'current') currentHtml += section;
+      else futureHtml += section;
+    }
+
+    if (isToday && currentIdx === -1) {
+      currentHtml = '<div class="break-message" id="period-break"><div class="icon">☕</div><strong>Pause</strong><p class="text-muted mt">Vous n\'êtes dans aucune période planifiée pour le moment.</p></div>';
+    }
+
+    scrollHtml = pastHtml + currentHtml + futureHtml;
+  }
+
+  document.getElementById('daily-scroll').innerHTML = scrollHtml;
+
+  if (!dailyScrollInitialized) {
+    dailyScrollInitialized = true;
+    setTimeout(function() {
+      var target = document.getElementById('period-section-'+currentIdx) || document.getElementById('period-break');
+      if (target) target.scrollIntoView({ block: 'center', behavior: 'smooth' });
+    }, 100);
+  }
+}
+
+// ── Schedule (periods + assignment) ───────────────────────────────────────────
+function renderSchedule() {
+  var container = document.getElementById('schedule-content');
+  var ds = planningDateStr();
+  var periods = getEffectivePeriods();
+  var overridden = isDateOverridden(ds);
+  var currentTT = data.activeTimetableId ? data.timetables[data.activeTimetableId] : null;
+  var isToday = ds === todayStr();
+  periods.sort(function(a,b) { return parseTime(a.startTime) - parseTime(b.startTime); });
+
+  var html = '<div class="flex-between mb"><h2>Planning — '+formatDateLabel(ds)+'</h2>';
+  html += '<button class="btn btn-primary" onclick="openAddPeriodModal(\'schedule\')">+ Période</button></div>';
+
+  html += '<div class="card" style="padding:12px 16px; border-left:4px solid '+(overridden?'var(--warning)':'var(--success)')+'">';
+  if (overridden) {
+    html += '<div class="flex-between"><span><strong>Mode :</strong> Override du jour</span>';
+    html += '<button class="btn btn-sm" onclick="resetDateToTemplate()">Revenir au template</button></div>';
+  } else if (currentTT) {
+    html += '<span><strong>Template actif :</strong> <em>'+escHtml(currentTT.name)+'</em></span>';
+  } else {
+    html += '<span class="text-muted">Aucun template actif. Les périodes seront enregistrées pour ce jour uniquement.</span>';
+  }
+  html += '</div>';
+
+  if (periods.length === 0) {
+    html += '<div class="empty-state"><div class="icon">📭</div><p>Aucune période. Ajoutez-en une ci-dessus.</p></div>';
+  } else {
+    var nowMins = isToday ? new Date().getHours()*60 + new Date().getMinutes() : -1;
+    for (var i = 0; i < periods.length; i++) {
+      var p = periods[i];
+      var start = parseTime(p.startTime), end = parseTime(p.endTime);
+      var isActive = isToday && nowMins >= start && nowMins < end;
+      html += '<div class="card period-item'+(isActive?' is-active':'')+'" style="padding:14px">';
+      html += '<div class="flex-between mb"><div class="period-time" style="flex-direction:row; gap:8px; min-width:auto"><span>'+p.startTime+'</span><span class="sep">→</span><span>'+p.endTime+'</span></div>';
+      html += '<div><strong>'+escHtml(p.title)+'</strong>'+(isActive?' <span class="badge badge-accent">NOW</span>':'')+'</div>';
+      html += '<div style="display:flex;gap:4px"><button class="btn btn-sm btn-icon" onclick="openEditPeriodModal('+i+',\'schedule\')">✏️</button>';
+      html += '<button class="btn btn-sm btn-icon btn-danger" onclick="deletePeriod('+i+')">🗑️</button></div></div>';
+
+      html += '<div class="task-dropzone" ondragover="onDragOver(event)" ondrop="onDrop(event,'+i+')" ondragleave="onDragLeave(event)">';
+      if (p.taskIds && p.taskIds.length) {
+        p.taskIds.forEach(function(tid) {
+          var t = getTaskById(tid);
+          if (t) {
+            var col = getProjectColor(getTaskProjectId(t));
+            html += '<span class="task-chip'+(t.isDone?' is-done':'')+'" style="--chip-color:'+col+'" draggable="true" ondragstart="onTaskChipDragStart(event,\''+tid+'\')">';
+            html += escHtml(t.title.substring(0,30))+'<span class="remove" onclick="removeTaskFromPeriod('+i+',\''+tid+'\')">×</span></span>';
+          }
+        });
+      } else {
+        html += '<span class="placeholder">Glissez des tâches ici…</span>';
+      }
+      html += '</div></div>';
+    }
+  }
+
+  html += renderTaskPicker();
+  container.innerHTML = html;
+  if (taskSearchQuery) {
+    var s = document.getElementById('task-search');
+    if (s) { s.focus(); s.setSelectionRange(s.value.length, s.value.length); }
+  }
+}
+
+function renderTaskPicker() {
+  var ds = planningDateStr();
+  var query = taskSearchQuery.toLowerCase();
+  var parentTasks = allTasks.filter(function(t) { return !t.isDone && !t.parentId; });
+  var subtasksByParent = {};
+  allTasks.filter(function(t) { return !t.isDone && t.parentId; }).forEach(function(t) {
+    if (!subtasksByParent[t.parentId]) subtasksByParent[t.parentId] = [];
+    subtasksByParent[t.parentId].push(t);
+  });
+
+  var todayTasks = parentTasks.filter(function(t) { return t.dueDay === ds; });
+  var otherTasks = parentTasks.filter(function(t) { return t.dueDay !== ds; });
+  if (query) {
+    todayTasks = todayTasks.filter(function(t) {
+      if (t.title.toLowerCase().indexOf(query) !== -1) return true;
+      return (subtasksByParent[t.id]||[]).some(function(s) { return s.title.toLowerCase().indexOf(query)!==-1; });
+    });
+    otherTasks = otherTasks.filter(function(t) {
+      if (t.title.toLowerCase().indexOf(query) !== -1) return true;
+      return (subtasksByParent[t.id]||[]).some(function(s) { return s.title.toLowerCase().indexOf(query)!==-1; });
+    });
+  }
+
+  function renderTaskList(tasks) {
+    var h = '';
+    var groups = {};
+    tasks.forEach(function(t) {
+      var pid = getTaskProjectId(t) || 'inbox';
+      if (!groups[pid]) groups[pid] = [];
+      groups[pid].push(t);
+    });
+    Object.keys(groups).sort().forEach(function(pid) {
+      var color = getProjectColor(pid === 'inbox' ? null : pid);
+      var pname = getProjectName(pid === 'inbox' ? null : pid);
+      h += '<div class="project-group"><div class="project-header"><span class="project-dot" style="background:'+color+'"></span>'+escHtml(pname)+'</div>';
+      groups[pid].forEach(function(t) {
+        h += '<div class="available-task" draggable="true" ondragstart="onTaskDragStart(event,\''+t.id+'\')">⠿ '+escHtml(t.title.substring(0,60))+'</div>';
+        (subtasksByParent[t.id]||[]).forEach(function(sub) {
+          if (!query || sub.title.toLowerCase().indexOf(query)!==-1)
+            h += '<div class="available-task is-subtask" draggable="true" ondragstart="onTaskDragStart(event,\''+sub.id+'\')">↳ '+escHtml(sub.title.substring(0,55))+'</div>';
+        });
+      });
+      h += '</div>';
+    });
+    return h || '<p class="text-muted" style="text-align:center;padding:10px">Aucune tâche.</p>';
+  }
+
+  var html = '<div class="mt"><h3>Tâches disponibles</h3>';
+  html += '<input type="search" class="search-box" id="task-search" placeholder="Rechercher…" oninput="onTaskSearch(this.value)" value="'+escAttr(taskSearchQuery)+'" />';
+  html += '<div class="task-section-today"><div class="task-section-header"><h3>📌 '+formatDateLabel(ds)+'</h3><span class="task-count">'+todayTasks.length+'</span></div>';
+  html += '<div class="available-tasks">'+renderTaskList(todayTasks)+'</div></div>';
+  html += '<div class="task-section-all"><div class="task-section-header" onclick="toggleAllTasksSection()">';
+  html += '<span style="font-size:0.7rem">'+(allTasksSectionCollapsed?'▸':'▾')+'</span>';
+  html += '<h3>📂 Toutes les tâches</h3><span class="task-count">'+otherTasks.length+'</span></div>';
+  html += '<div class="available-tasks" id="all-tasks-list" style="'+(allTasksSectionCollapsed?'display:none':'')+'">'+renderTaskList(otherTasks)+'</div></div></div>';
+  return html;
+}
+
+function resetDateToTemplate() {
+  var ds = planningDateStr();
+  mutate('DELETE_DAILY_OVERRIDE', { dateStr: ds });
+  refreshCurrentTab();
+}
+
+// ── Period modals ────────────────────────────────────────────────────────────
+function selectScope(scope) {
+  periodSaveScope = scope;
+  document.querySelectorAll('.scope-option').forEach(function(el) {
+    el.classList.toggle('selected', el.getAttribute('data-scope') === scope);
+  });
+}
+
+function openAddPeriodModal(context) {
+  modalContext = context || 'schedule';
+  modalPeriodIdx = null;
+  document.getElementById('m-period-title').textContent = 'Ajouter une période';
+  document.getElementById('p-title').value = '';
+  document.getElementById('p-start').value = '08:00';
+  document.getElementById('p-end').value = '09:00';
+
+  var scopeEl = document.getElementById('scope-selector');
+  if (modalContext === 'schedule' && data.activeTimetableId && data.timetables[data.activeTimetableId]) {
+    scopeEl.style.display = 'flex';
+    periodSaveScope = 'today';
+    selectScope('today');
+    document.getElementById('scope-template-name').textContent =
+      'Template « '+data.timetables[data.activeTimetableId].name+' » — '+DAYS[dayIndex(currentPlanningDate || new Date())];
+  } else {
+    scopeEl.style.display = 'none';
+    periodSaveScope = modalContext === 'template' ? 'template' : 'today';
+  }
+  document.getElementById('modal-period').style.display = 'flex';
+}
+
+function openEditPeriodModal(idx, context) {
+  modalContext = context || 'schedule';
+  modalPeriodIdx = idx;
+  periodSaveScope = 'today';
+  document.getElementById('scope-selector').style.display = 'none';
+  var p = getEffectivePeriods()[idx];
+  document.getElementById('m-period-title').textContent = 'Modifier la période';
+  document.getElementById('p-title').value = p.title;
+  document.getElementById('p-start').value = p.startTime;
+  document.getElementById('p-end').value = p.endTime;
+  document.getElementById('modal-period').style.display = 'flex';
+}
+
+function closePeriodModal() { document.getElementById('modal-period').style.display = 'none'; }
+
+function savePeriodToTarget(periods, idx, newPeriod) {
+  if (idx === null) periods.push(newPeriod);
+  else { newPeriod.taskIds = periods[idx].taskIds || []; periods[idx] = newPeriod; }
+  periods.sort(function(a,b) { return parseTime(a.startTime) - parseTime(b.startTime); });
+  return periods;
+}
+
+function savePeriod() {
+  if (editingTimetableId && modalContext === 'template') { saveTTPeriodActual(); return; }
+
+  var title = document.getElementById('p-title').value.trim();
+  var start = document.getElementById('p-start').value;
+  var end = document.getElementById('p-end').value;
+  if (!title || !start || !end) return;
+
+  var newP = { title: title, startTime: start, endTime: end, taskIds: [] };
+
+  if (modalContext === 'template' && editingTimetableId) {
+    var ps = (data.timetables[editingTimetableId].days[editingDayIndex].periods || []).slice();
+    savePeriodToTarget(ps, modalTTPeriodIdx, newP);
+    setTemplateDayPeriods(editingTimetableId, editingDayIndex, ps);
+    closePeriodModal();
+    renderTemplateEditor();
+    return;
+  }
+
+  if (periodSaveScope === 'template' && data.activeTimetableId) {
+    var ds = planningDateStr();
+    var dow = dayIndex(new Date(ds + 'T12:00:00'));
+    var tps = (data.timetables[data.activeTimetableId].days[dow] && data.timetables[data.activeTimetableId].days[dow].periods)
+      ? data.timetables[data.activeTimetableId].days[dow].periods.slice() : [];
+    savePeriodToTarget(tps, modalPeriodIdx, newP);
+    setTemplateDayPeriods(data.activeTimetableId, dow, tps);
+  } else {
+    var dateStr = planningDateStr();
+    var dps = getEffectivePeriodsForDate(dateStr);
+    if (!isDateOverridden(dateStr)) dps = dps.slice();
+    savePeriodToTarget(dps, modalPeriodIdx, newP);
+    setDailyPeriods(dateStr, dps);
+  }
+
+  closePeriodModal();
+  refreshCurrentTab();
+}
+
+function deletePeriod(idx) {
+  var dateStr = planningDateStr();
+  var ps = getEffectivePeriodsForDate(dateStr);
+  if (!isDateOverridden(dateStr)) ps = ps.slice();
+  ps.splice(idx, 1);
+  setDailyPeriods(dateStr, ps);
+  refreshCurrentTab();
+}
+
+// ── Drag & drop ──────────────────────────────────────────────────────────────
+function onTaskSearch(val) { taskSearchQuery = val; renderSchedule(); }
+function toggleAllTasksSection() {
+  allTasksSectionCollapsed = !allTasksSectionCollapsed;
+  renderSchedule();
+}
+function onTaskDragStart(ev, id) { draggedTaskId = id; ev.dataTransfer.setData('text/plain', id); }
+function onTaskChipDragStart(ev, id) { draggedTaskId = id; ev.dataTransfer.setData('text/plain', id); }
+function onDragOver(ev) { ev.preventDefault(); ev.currentTarget.classList.add('drag-over'); }
+function onDragLeave(ev) { ev.currentTarget.classList.remove('drag-over'); }
+function onDrop(ev, idx) {
+  ev.preventDefault(); ev.currentTarget.classList.remove('drag-over');
+  var id = ev.dataTransfer.getData('text/plain') || draggedTaskId;
+  if (!id && PluginAPI.getDraggedTaskId) id = PluginAPI.getDraggedTaskId();
+  if (!id) return;
+  var dateStr = planningDateStr();
+  var ps = getEffectivePeriodsForDate(dateStr);
+  if (!isDateOverridden(dateStr)) ps = ps.slice();
+  for (var i = 0; i < ps.length; i++) {
+    if (ps[i].taskIds) ps[i].taskIds = ps[i].taskIds.filter(function(t) { return t !== id; });
+  }
+  if (!ps[idx].taskIds) ps[idx].taskIds = [];
+  if (ps[idx].taskIds.indexOf(id) === -1) ps[idx].taskIds.push(id);
+  setDailyPeriods(dateStr, ps);
+  refreshCurrentTab();
+}
+function removeTaskFromPeriod(idx, id) {
+  var dateStr = planningDateStr();
+  var ps = getEffectivePeriodsForDate(dateStr);
+  if (!isDateOverridden(dateStr)) ps = ps.slice();
+  if (ps[idx] && ps[idx].taskIds) {
+    ps[idx].taskIds = ps[idx].taskIds.filter(function(t) { return t !== id; });
+    setDailyPeriods(dateStr, ps);
+    refreshCurrentTab();
+  }
+}
+
+// ── Template management ────────────────────────────────────────────────────────
+function renderTemplateList() {
+  var container = document.getElementById('template-list');
+  var html = '<div class="flex-between mb"><h2>Templates hebdomadaires</h2>';
+  html += '<button class="btn btn-primary" onclick="openCreateTimetableModal()">+ Nouveau</button></div>';
+  var ids = Object.keys(data.timetables);
+  if (!ids.length) {
+    html += '<div class="empty-state"><div class="icon">📋</div><p>Aucun template. Créez votre semaine type.</p></div>';
+  } else {
+    ids.forEach(function(id) {
+      var tt = data.timetables[id];
+      var isActive = data.activeTimetableId === id;
+      var total = 0;
+      for (var d = 0; d < 7; d++) if (tt.days && tt.days[d] && tt.days[d].periods) total += tt.days[d].periods.length;
+      html += '<div class="card"><div class="flex-between"><div><strong>'+escHtml(tt.name)+'</strong><br><span class="text-muted">'+total+' périodes</span>';
+      if (isActive) html += ' <span class="badge badge-accent">ACTIF</span>';
+      html += '</div><div style="display:flex;flex-direction:column;gap:4px">';
+      if (isActive) html += '<button class="btn btn-sm" onclick="deactivateTimetable()">Désactiver</button>';
+      else html += '<button class="btn btn-sm btn-primary" onclick="activateTimetable(\''+id+'\')">Activer</button>';
+      html += '<div style="display:flex;gap:4px"><button class="btn btn-sm btn-icon" onclick="editTimetable(\''+id+'\')">✏️</button>';
+      html += '<button class="btn btn-sm btn-icon btn-danger" onclick="deleteTimetable(\''+id+'\')">🗑️</button></div></div></div></div>';
+    });
+  }
+  container.innerHTML = html;
+}
+
+function openCreateTimetableModal() {
+  document.getElementById('m-tt-name').value = 'Semaine type';
+  document.getElementById('modal-tt').style.display = 'flex';
+}
+function closeTTModal() { document.getElementById('modal-tt').style.display = 'none'; }
+
+function createTimetable() {
+  var name = document.getElementById('m-tt-name').value.trim();
+  if (!name) return;
+  var id = uid();
+  var tt = { name: name, days: {} };
+  for (var d = 0; d < 7; d++) tt.days[d] = { periods: [] };
+  mutate('UPSERT_TIMETABLE', { id: id, timetable: tt });
+  closeTTModal();
+  editTimetable(id);
+}
+
+function activateTimetable(id) {
+  mutate('SET_ACTIVE_TIMETABLE', { id: id });
+  var ds = planningDateStr();
+  if (data.dailyOverrides && data.dailyOverrides[ds]) mutate('DELETE_DAILY_OVERRIDE', { dateStr: ds });
+  renderTemplateList();
+  refreshCurrentTab();
+}
+
+function deactivateTimetable() {
+  mutate('CLEAR_ACTIVE_TIMETABLE', {});
+  renderTemplateList();
+  refreshCurrentTab();
+}
+
+function deleteTimetable(id) {
+  mutate('DELETE_TIMETABLE', { id: id });
+  renderTemplateList();
+}
+
+function editTimetable(id) {
+  editingTimetableId = id;
+  editingDayIndex = dayIndex(currentPlanningDate || new Date());
+  document.getElementById('template-list').style.display = 'none';
+  document.getElementById('template-editor').style.display = 'block';
+  renderTemplateEditor();
+}
+
+function closeTimetableEditor() {
+  editingTimetableId = null;
+  document.getElementById('template-editor').style.display = 'none';
+  document.getElementById('template-list').style.display = 'block';
+  renderTemplateList();
+}
+
+function renderTemplateEditor() {
+  var container = document.getElementById('template-editor');
+  var tt = data.timetables[editingTimetableId];
+  if (!tt) { closeTimetableEditor(); return; }
+
+  var html = '<div class="flex-between mb"><h2>'+escHtml(tt.name)+'</h2><button class="btn" onclick="closeTimetableEditor()">← Retour</button></div>';
+  html += '<div class="day-tabs">';
+  for (var d = 0; d < 7; d++) {
+    html += '<div class="day-tab'+(d===editingDayIndex?' active':'')+'" onclick="editingDayIndex='+d+';renderTemplateEditor()">'+DAYS[d]+'</div>';
+  }
+  html += '</div>';
+  html += '<div class="flex-between mb"><h3>'+DAYS[editingDayIndex]+'</h3>';
+  html += '<button class="btn btn-primary btn-sm" onclick="addTTPeriod()">+ Période</button></div>';
+
+  var dayData = tt.days[editingDayIndex] || { periods: [] };
+  if (!dayData.periods.length) {
+    html += '<p class="text-muted" style="text-align:center;padding:20px">Aucune période ce jour-là.</p>';
+  } else {
+    dayData.periods.forEach(function(p, i) {
+      html += '<div class="period-item"><div class="period-time"><span>'+p.startTime+'</span><span class="sep">▼</span><span>'+p.endTime+'</span></div>';
+      html += '<div class="period-info"><strong>'+escHtml(p.title)+'</strong></div>';
+      html += '<div class="period-actions"><button class="btn btn-sm btn-icon" onclick="editTTPeriod('+i+')">✏️</button>';
+      html += '<button class="btn btn-sm btn-icon btn-danger" onclick="deleteTTPeriod('+i+')">🗑️</button></div></div>';
+    });
+  }
+  container.innerHTML = html;
+}
+
+function addTTPeriod() {
+  modalContext = 'template';
+  modalTTPeriodIdx = null;
+  document.getElementById('scope-selector').style.display = 'none';
+  document.getElementById('m-period-title').textContent = 'Période template';
+  document.getElementById('p-title').value = '';
+  document.getElementById('p-start').value = '08:00';
+  document.getElementById('p-end').value = '09:00';
+  document.getElementById('modal-period').style.display = 'flex';
+}
+
+function editTTPeriod(idx) {
+  modalContext = 'template';
+  modalTTPeriodIdx = idx;
+  document.getElementById('scope-selector').style.display = 'none';
+  var p = data.timetables[editingTimetableId].days[editingDayIndex].periods[idx];
+  document.getElementById('m-period-title').textContent = 'Modifier période template';
+  document.getElementById('p-title').value = p.title;
+  document.getElementById('p-start').value = p.startTime;
+  document.getElementById('p-end').value = p.endTime;
+  document.getElementById('modal-period').style.display = 'flex';
+}
+
+function deleteTTPeriod(idx) {
+  var ps = data.timetables[editingTimetableId].days[editingDayIndex].periods.slice();
+  ps.splice(idx, 1);
+  setTemplateDayPeriods(editingTimetableId, editingDayIndex, ps);
+  renderTemplateEditor();
+}
+
+function saveTTPeriodActual() {
+  var title = document.getElementById('p-title').value.trim();
+  var start = document.getElementById('p-start').value;
+  var end = document.getElementById('p-end').value;
+  if (!title || !start || !end) return;
+  var ps = (data.timetables[editingTimetableId].days[editingDayIndex].periods || []).slice();
+  var np = { title: title, startTime: start, endTime: end, taskIds: [] };
+  if (modalTTPeriodIdx === null) ps.push(np);
+  else { np.taskIds = ps[modalTTPeriodIdx].taskIds || []; ps[modalTTPeriodIdx] = np; }
+  ps.sort(function(a,b) { return parseTime(a.startTime) - parseTime(b.startTime); });
+  setTemplateDayPeriods(editingTimetableId, editingDayIndex, ps);
+  closePeriodModal();
+  renderTemplateEditor();
+}
+
+// ── Init ─────────────────────────────────────────────────────────────────────
+async function init() {
+  if (typeof PluginAPI === 'undefined') { setTimeout(init, 100); return; }
+  currentPlanningDate = new Date();
+  loadDeviceId();
+  await loadDataFromStore();
+  await loadTasks();
+  updateDateSelector();
+  renderDailyView();
+
+  if (PluginAPI.registerHook) {
+    
+
+    PluginAPI.registerHook(PluginAPI.Hooks.CURRENT_TASK_CHANGE, function(p) {
+      currentTaskId = p && p.task ? p.task.id : null;
+      if (document.getElementById('daily').classList.contains('active')) renderDailyView();
+    });
+  }
+
+  window.addEventListener('message', function(e) {
+    if (e.data && e.data.type === 'SP_ACTION') {
+      var action = e.data.action;
+      if (action && action.type === '[Task] SetCurrentTask') currentTaskId = action.id;
+      if (document.getElementById('daily').classList.contains('active')) renderDailyView();
+    }
+  });
+
+  setInterval(function() {
+    if (document.getElementById('daily').classList.contains('active') && planningDateStr() === todayStr()) {
+      renderDailyView();
+    }
+  }, 60000);
+}
+
+CombinedRuntime.ready(init);
+(function(){
+
+// ── CORE STATE ───────────────────────────────────────────────────────────────
+let state = {
+  steps: [], // { taskId, title, duration, color?, projectId? }
+  currentIndex: 0,
+  currentTime: 0,
+  isRunning: false,
+  lastUpdate: Date.now(),
+  loopInfinite: false
+};
+
+let uiState = {
+  isCollapsed: false
+};
+
+let allTasks = [];
+let allProjects = [];
+let allTags = [];
+let pendingTask = null; // For modal
+let dragsource = null;
+let autreTaskId = null;
+const AUTRE_TASK_TITLE = 'autre';
+
+// ── TIMER ENGINE ─────────────────────────────────────────────────────────────
+const timer = {
+  interval: null,
+
+  start(silent = false) {
+    if (state.steps.length === 0) return;
+    state.isRunning = true;
+    state.lastUpdate = Date.now();
+    this.interval = setInterval(() => this.tick(), 1000);
+    ui.updateTimerView();
+    persistence.save();
+    
+    // Auto-start task in SP
+    if (!silent && state.steps[state.currentIndex]) {
+      this.syncCurrentStepWithSP();
+    }
+  },
+
+  pause(silent = false) {
+    state.isRunning = false;
+    clearInterval(this.interval);
+    ui.updateTimerView();
+    persistence.save();
+
+    if (!silent) {
+      this.syncWithSP(null);
+    }
+  },
+
+  toggle(silent = false) {
+    state.isRunning ? this.pause(silent) : this.start(silent);
+  },
+
+  tick() {
+    if (state.currentTime > 0) {
+      state.currentTime--;
+      state.lastUpdate = Date.now();
+      ui.updateTimerView();
+      // Only persist every 10 ticks or on status change to avoid overhead
+      if (state.currentTime % 10 === 0) persistence.save();
+    } else {
+      this.next(true);
+    }
+  },
+
+  next(auto = false) {
+    if (state.currentIndex < state.steps.length - 1) {
+      state.currentIndex++;
+      state.currentTime = state.steps[state.currentIndex].duration;
+      if (auto) ui.playBeep();
+      ui.updateTimerView();
+      ui.renderSequence();
+      persistence.save();
+      
+      if (state.isRunning) {
+        this.syncCurrentStepWithSP();
+      }
+    } else if (state.loopInfinite && state.steps.length > 0) {
+      state.currentIndex = 0;
+      state.currentTime = state.steps[0].duration;
+      if (auto) ui.playBeep();
+      ui.updateTimerView();
+      ui.renderSequence();
+      persistence.save();
+      
+      if (state.isRunning) {
+        this.syncCurrentStepWithSP();
+      }
+    } else {
+      this.pause();
+      state.currentTime = 0;
+      if (auto) ui.playBeep();
+      ui.updateTimerView();
+      persistence.save();
+    }
+  },
+
+  prev() {
+    if (state.currentIndex > 0) {
+      state.currentIndex--;
+      state.currentTime = state.steps[state.currentIndex].duration;
+    } else {
+      state.currentTime = state.steps[0] ? state.steps[0].duration : 0;
+    }
+    ui.updateTimerView();
+    ui.renderSequence();
+    persistence.save();
+    if (state.isRunning) {
+      this.syncCurrentStepWithSP();
+    }
+  },
+
+  reset() {
+    this.pause();
+    state.currentIndex = 0;
+    state.currentTime = state.steps[0] ? state.steps[0].duration : 0;
+    ui.updateTimerView();
+    ui.renderSequence();
+    persistence.save();
+  },
+
+  clearSequence() {
+    this.pause();
+    state.steps = [];
+    state.currentIndex = 0;
+    state.currentTime = 0;
+    ui.updateTimerView();
+    ui.renderSequence();
+    persistence.save();
+  },
+
+  syncCurrentStepWithSP() {
+    const step = state.steps[state.currentIndex];
+    if (!step) return;
+    if (step.taskId.startsWith('custom_')) {
+      spSync.ensureAutreTask().then(id => this.syncWithSP(id));
+    } else {
+      this.syncWithSP(step.taskId);
+    }
+  },
+
+  syncWithSP(taskId) {
+    if (window.PluginAPI && PluginAPI.dispatchAction) {
+      PluginAPI.dispatchAction({ type: '[Task] SetCurrentTask', id: taskId });
+    }
+  }
+};
+
+function adjustTime(seconds) {
+  state.currentTime = Math.max(0, state.currentTime + seconds);
+  ui.updateTimerView();
+  persistence.save();
+}
+
+const spSync = {
+  async ensureAutreTask() {
+    if (autreTaskId) {
+      const stillExists = allTasks.find(t => t.id === autreTaskId);
+      if (stillExists) return autreTaskId;
+    }
+
+    const today = new Date().toISOString().split('T')[0];
+    allTasks = (await CombinedTaskContext.refresh()).tasks;
+    let autre = allTasks.find(t =>
+      t.title.toLowerCase() === AUTRE_TASK_TITLE &&
+      t.dueDay === today &&
+      !t.isDone &&
+      !t.parentId
+    );
+
+    if (!autre) {
+      autre = await PluginAPI.addTask({
+        title: AUTRE_TASK_TITLE,
+        dueDay: today,
+        projectId: null
+      });
+      allTasks = (await CombinedTaskContext.refresh()).tasks;
+    }
+
+    autreTaskId = autre.id;
+    return autreTaskId;
+  }
+};
+
+// ── UI CONTROLLER ────────────────────────────────────────────────────────────
+const ui = {
+  renderTasks(type, query = '') {
+    const listEl = document.getElementById(`list-${type}`);
+    const countEl = document.getElementById(`count-${type}`);
+    const parentTasks = allTasks.filter(t => !t.isDone && !t.parentId);
+    const subtasksByParent = {};
+    allTasks.filter(t => !t.isDone && t.parentId).forEach(t => {
+      if (!subtasksByParent[t.parentId]) subtasksByParent[t.parentId] = [];
+      subtasksByParent[t.parentId].push(t);
+    });
+
+    let tasks = parentTasks.slice();
+    
+    if (type === 'today') {
+      const today = new Date().toISOString().split('T')[0];
+      tasks = tasks.filter(t => t.dueDay === today);
+    }
+    
+    if (query) {
+      const q = query.toLowerCase();
+      tasks = tasks.filter(t => {
+        if (t.title.toLowerCase().includes(q)) return true;
+        const subs = subtasksByParent[t.id] || [];
+        return subs.some(s => s.title.toLowerCase().includes(q));
+      });
+    }
+
+    const visibleSubtaskCount = tasks.reduce((sum, t) => sum + (subtasksByParent[t.id]?.length || 0), 0);
+    countEl.textContent = tasks.length + visibleSubtaskCount;
+    
+    const groups = {};
+    tasks.forEach(t => {
+      const pid = t.projectId || 'inbox';
+      if (!groups[pid]) groups[pid] = [];
+      groups[pid].push(t);
+    });
+
+    let html = '';
+    const sortedPids = Object.keys(groups).sort();
+    
+    sortedPids.forEach(pid => {
+      const project = allProjects.find(p => p.id === pid);
+      html += `<div class="project-group">
+        <div class="project-header">
+          <span class="project-dot" style="background:${project?.theme?.primary || '#89b4fa'}"></span>
+          ${project?.title || 'Inbox'}
+        </div>`;
+      
+      groups[pid].forEach(task => {
+        html += this.renderAvailableTaskRow(task, false);
+        (subtasksByParent[task.id] || []).forEach(sub => {
+          if (!query || sub.title.toLowerCase().includes(query.toLowerCase())) {
+            html += this.renderAvailableTaskRow(sub, true);
+          }
+        });
+      });
+      html += `</div>`;
+    });
+
+    listEl.innerHTML = html || '<div class="empty-placeholder">No tasks available</div>';
+  },
+
+  renderAvailableTaskRow(task, isSubtask) {
+    const prefix = isSubtask ? '↳ ' : '';
+    return `<div class="${isSubtask ? 'subtask-item' : ''}">
+      <div class="available-task" draggable="true" ondragstart="ui.onTaskDragStart(event, '${task.id}')" onclick="ui.toggleQuickAdd(this)">
+        <div style="display:flex; justify-content:space-between; width:100%; gap: 8px;">
+          <div style="flex:1;">
+            <div>${prefix}${task.title}</div>
+            <div class="task-tags">
+              ${(task.tagIds || []).map(tid => {
+                const tag = allTags.find(tg => tg.id === tid);
+                return tag ? `<span class="task-tag" style="background:${tag.color || 'var(--divider)'}">${tag.title}</span>` : '';
+              }).join('')}
+            </div>
+          </div>
+          <div class="quick-add-box hidden">
+            <button class="btn btn-primary btn-xs" onclick="event.stopPropagation(); ui.startAddTask('${task.id}', 'top')">Add Top</button>
+            <button class="btn btn-primary btn-xs" onclick="event.stopPropagation(); ui.startAddTask('${task.id}', 'bottom')">Add Bottom</button>
+          </div>
+        </div>
+      </div>
+    </div>`;
+  },
+
+  enrichStepColors() {
+    state.steps.forEach(step => {
+      if (step.taskId.startsWith('custom_')) return;
+      const task = allTasks.find(t => t.id === step.taskId);
+      if (task) {
+        step.color = this.getProjectColor(this.getTaskProjectId(task));
+        step.projectId = this.getTaskProjectId(task);
+      }
+    });
+  },
+
+  getStepColor(step) {
+    if (step.color) return step.color;
+    if (step.taskId.startsWith('custom_')) return '#89b4fa';
+    const task = allTasks.find(t => t.id === step.taskId);
+    return task ? this.getProjectColor(this.getTaskProjectId(task)) : '#89b4fa';
+  },
+
+  toggleLoop(checked) {
+    state.loopInfinite = checked;
+    persistence.save();
+  },
+
+  renderSequence() {
+    const listEl = document.getElementById('sequence-list');
+    if (state.steps.length === 0) {
+      listEl.innerHTML = '<div class="empty-placeholder">Drag tasks here to plan your sequence</div>';
+      return;
+    }
+
+    this.enrichStepColors();
+
+    let html = '';
+    state.steps.forEach((step, idx) => {
+      const isActive = idx === state.currentIndex;
+      const stepColor = this.getStepColor(step);
+      html += `<div class="task-item ${isActive ? 'active' : ''}" 
+                   style="--step-color: ${stepColor}"
+                   draggable="true" 
+                   ondragstart="ui.onSequenceDragStart(event, ${idx})"
+                   ondragover="ui.onDragOver(event)"
+                   ondrop="ui.onDrop(event, 'reorder', ${idx})">
+        <div class="task-drag-handle">⠿</div>
+        <div class="task-content" onclick="ui.editStep(${idx})">
+          <div class="task-title">${step.title}</div>
+          <div class="task-duration-label">${this.formatDuration(step.duration)}</div>
+        </div>
+        <div class="task-actions">
+          <button class="btn-tiny" onclick="event.stopPropagation(); ui.removeStep(${idx})">✕</button>
+        </div>
+      </div>`;
+    });
+    listEl.innerHTML = html;
+  },
+
+  updateTimerView() {
+    const display = document.getElementById('timer-display');
+    const slimDisplay = document.getElementById('slim-timer-display');
+    const bar = document.getElementById('progress-bar');
+    const taskName = document.getElementById('current-task-name');
+    const slimTaskName = document.getElementById('slim-task-name');
+    const playIcon = document.getElementById('play-icon');
+    const pauseIcon = document.getElementById('pause-icon');
+    const slimPlayIcon = document.getElementById('slim-play-icon');
+    const slimPauseIcon = document.getElementById('slim-pause-icon');
+    const totalTimeDisplay = document.getElementById('total-time-display');
+
+    // Digits
+    const mins = Math.floor(state.currentTime / 60);
+    const secs = state.currentTime % 60;
+    const timeStr = `${String(mins).padStart(2, '0')}:${String(secs).padStart(2, '0')}`;
+    
+    display.textContent = timeStr;
+    slimDisplay.textContent = timeStr;
+    
+    // Colors based on time left
+    const currentStep = state.steps[state.currentIndex];
+    const total = currentStep ? currentStep.duration : 1;
+    const pct = (state.currentTime / total);
+    
+    display.className = 'timer-digits';
+    slimDisplay.style.color = 'var(--primary)';
+    if (pct <= 0.1) {
+      display.classList.add('danger');
+      slimDisplay.style.color = 'var(--danger)';
+    } else if (pct <= 0.25) {
+      display.classList.add('warning');
+      slimDisplay.style.color = 'var(--warning)';
+    }
+
+    // Progress Bar
+    bar.style.width = `${(1 - pct) * 100}%`;
+    bar.style.transition = state.isRunning ? 'width 1s linear' : 'none';
+
+    // Task Name
+    const title = currentStep ? currentStep.title : 'No task selected';
+    taskName.textContent = title;
+    slimTaskName.textContent = title;
+    
+    // Icons
+    if (state.isRunning) {
+      playIcon.classList.add('hidden');
+      pauseIcon.classList.remove('hidden');
+      slimPlayIcon.classList.add('hidden');
+      slimPauseIcon.classList.remove('hidden');
+    } else {
+      playIcon.classList.remove('hidden');
+      pauseIcon.classList.add('hidden');
+      slimPlayIcon.classList.remove('hidden');
+      slimPauseIcon.classList.add('hidden');
+    }
+
+    // Total Time Calculation
+    let totalSecs = 0;
+    let elapsedSecs = 0;
+    
+    if (state.steps.length > 0) {
+      totalSecs = state.steps.reduce((sum, s) => sum + s.duration, 0);
+      
+      const prevDurations = state.steps.slice(0, state.currentIndex).reduce((sum, s) => sum + s.duration, 0);
+      const currentElapsed = currentStep ? Math.max(0, currentStep.duration - state.currentTime) : 0;
+      
+      // If completed sequence, keep elapsed = total
+      if (state.currentIndex >= state.steps.length) {
+        elapsedSecs = totalSecs;
+      } else {
+        elapsedSecs = prevDurations + currentElapsed;
+      }
+    }
+    
+    totalTimeDisplay.textContent = `Total: ${this.formatDuration(elapsedSecs)} / ${this.formatDuration(totalSecs)}`;
+
+    // Tab title
+    if (state.isRunning) {
+      document.title = `(${display.textContent}) Chrono`;
+    } else {
+      document.title = `Chrono Pro`;
+    }
+  },
+
+  formatDuration(sec) {
+    const m = Math.floor(sec / 60);
+    const s = sec % 60;
+    if (m > 0) return `${m}m ${s > 0 ? s + 's' : ''}`;
+    return `${s}s`;
+  },
+
+  parseDuration(str) {
+    str = str.toLowerCase().trim();
+    if (!str) return 600; // default 10m
+    const match = str.match(/^([\d.]+)\s*([smh])?$/);
+    if (!match) return parseInt(str) * 60 || 600;
+    
+    const val = parseFloat(match[1]);
+    const unit = match[2] || 'm';
+    if (unit === 's') return val;
+    if (unit === 'h') return val * 3600;
+    return val * 60; // m
+  },
+
+  // Drag & Drop
+  onTaskDragStart(ev, id) {
+    dragsource = { type: 'source', id };
+    ev.dataTransfer.setData('application/json', JSON.stringify(dragsource));
+  },
+
+  onSequenceDragStart(ev, idx) {
+    dragsource = { type: 'reorder', idx };
+    ev.dataTransfer.setData('application/json', JSON.stringify(dragsource));
+  },
+
+  onDragOver(ev) {
+    ev.preventDefault();
+    ev.currentTarget.classList.add('drag-over');
+  },
+
+  onDragLeave(ev) {
+    ev.currentTarget.classList.remove('drag-over');
+  },
+
+  onDrop(ev, targetType, targetIdx) {
+    ev.preventDefault();
+    ev.currentTarget.classList.remove('drag-over');
+    
+    let data;
+    try {
+      data = JSON.parse(ev.dataTransfer.getData('application/json'));
+    } catch(e) {
+      // Fallback for SP external drag
+      const extId = dragsource?.id || (window.PluginAPI && PluginAPI.getDraggedTaskId ? PluginAPI.getDraggedTaskId() : null);
+      if (extId) data = { type: 'source', id: extId };
+    }
+
+    if (!data) return;
+
+    if (data.type === 'source') {
+      const task = allTasks.find(t => t.id === data.id);
+      if (task) {
+        pendingTask = { task, targetIdx };
+        this.openModal(task.title);
+      }
+    } else if (data.type === 'reorder' && targetType === 'reorder') {
+      const item = state.steps.splice(data.idx, 1)[0];
+      state.steps.splice(targetIdx, 0, item);
+      this.renderSequence();
+      persistence.save();
+    }
+  },
+
+  prepareUnplannedTask() {
+    // Scroll to source lists and highlight them
+    document.querySelector('.source-lists').scrollIntoView({ behavior: 'smooth' });
+    // Tell the next "source" drop to be inserted after current index
+    pendingTask = { forceInsertNext: true };
+    // Provide visual feedback
+    const btn = document.querySelector('button[onclick="ui.prepareUnplannedTask()"]');
+    const originalText = btn.textContent;
+    btn.textContent = "👆 Drop a task into the sequence!";
+    btn.style.background = "var(--success)";
+    setTimeout(() => {
+      btn.textContent = originalText;
+      btn.style.background = "";
+    }, 5000);
+  },
+
+  prepareCustomTask() {
+    pendingTask = { isCustom: true };
+    document.getElementById('modal-task-title').style.display = 'none';
+    document.getElementById('custom-title-wrapper').classList.remove('hidden');
+    document.getElementById('input-title').value = 'Custom Task';
+    document.getElementById('input-duration').value = '5';
+    document.getElementById('modal-confirm-btn').textContent = 'Add to Chrono';
+    document.getElementById('modal-duration').style.display = 'flex';
+    document.getElementById('input-title').focus();
+    document.getElementById('input-title').select();
+  },
+
+  editStep(idx) {
+    const step = state.steps[idx];
+    if (!step) return;
+    const isCustom = step.taskId.startsWith('custom_');
+    pendingTask = { editIndex: idx, isCustom };
+
+    if (isCustom) {
+      document.getElementById('modal-task-title').style.display = 'none';
+      document.getElementById('custom-title-wrapper').classList.remove('hidden');
+      document.getElementById('input-title').value = step.title;
+    } else {
+      document.getElementById('modal-task-title').style.display = 'block';
+      document.getElementById('modal-task-title').textContent = step.title;
+      document.getElementById('custom-title-wrapper').classList.add('hidden');
+    }
+
+    const mins = Math.floor(step.duration / 60);
+    const secs = step.duration % 60;
+    document.getElementById('input-duration').value = mins > 0 ? (secs > 0 ? `${mins}m ${secs}s` : `${mins}`) : `${secs}s`;
+    document.getElementById('modal-confirm-btn').textContent = 'Save';
+    document.getElementById('modal-duration').style.display = 'flex';
+    document.getElementById('input-duration').focus();
+    document.getElementById('input-duration').select();
+  },
+
+  toggleCollapse() {
+    uiState.isCollapsed = !uiState.isCollapsed;
+    const full = document.getElementById('timer-card-full');
+    const slim = document.getElementById('timer-card-slim');
+    const expIcon = document.getElementById('icon-expand');
+    const colIcon = document.getElementById('icon-collapse');
+    
+    if (uiState.isCollapsed) {
+      full.classList.add('hidden');
+      slim.classList.remove('hidden');
+      expIcon.classList.remove('hidden');
+      colIcon.classList.add('hidden');
+    } else {
+      full.classList.remove('hidden');
+      slim.classList.add('hidden');
+      expIcon.classList.add('hidden');
+      colIcon.classList.remove('hidden');
+    }
+  },
+
+  toggleQuickAdd(element) {
+    const box = element.querySelector('.quick-add-box');
+    if (box) box.classList.toggle('hidden');
+  },
+
+  startAddTask(taskId, pos) {
+    const task = allTasks.find(t => t.id === taskId);
+    if (!task) return;
+    pendingTask = { task, position: pos };
+    this.openModal(task.title);
+  },
+
+  openModal(title) {
+    document.getElementById('modal-task-title').style.display = 'block';
+    document.getElementById('modal-task-title').textContent = title;
+    document.getElementById('custom-title-wrapper').classList.add('hidden');
+    document.getElementById('input-duration').value = '10';
+    document.getElementById('modal-confirm-btn').textContent = 'Add to Chrono';
+    document.getElementById('modal-duration').style.display = 'flex';
+    document.getElementById('input-duration').focus();
+    document.getElementById('input-duration').select();
+  },
+
+  closeModal() {
+    document.getElementById('modal-duration').style.display = 'none';
+  },
+
+  getProjectColor(projectId) {
+    const project = allProjects.find(p => p.id === projectId);
+    return project?.theme?.primary || '#89b4fa';
+  },
+
+  getTaskProjectId(task) {
+    if (task.projectId) return task.projectId;
+    if (task.parentId) {
+      const parent = allTasks.find(t => t.id === task.parentId);
+      return parent?.projectId || null;
+    }
+    return null;
+  },
+
+  confirmTaskAdd() {
+    const durStr = document.getElementById('input-duration').value;
+    const durSec = this.parseDuration(durStr);
+
+    if (pendingTask.editIndex !== undefined) {
+      const idx = pendingTask.editIndex;
+      state.steps[idx].duration = durSec;
+      if (pendingTask.isCustom) {
+        state.steps[idx].title = document.getElementById('input-title').value || 'Custom Task';
+      }
+      if (idx === state.currentIndex) {
+        state.currentTime = durSec;
+      }
+      this.renderSequence();
+      this.updateTimerView();
+      this.closeModal();
+      persistence.save();
+      pendingTask = null;
+      return;
+    }
+    
+    let newStep;
+    if (pendingTask.isCustom) {
+      newStep = {
+        taskId: 'custom_' + Date.now(),
+        title: document.getElementById('input-title').value || 'Custom Task',
+        duration: durSec
+      };
+    } else {
+      newStep = {
+        taskId: pendingTask.task.id,
+        title: pendingTask.task.title,
+        duration: durSec,
+        color: this.getProjectColor(this.getTaskProjectId(pendingTask.task)),
+        projectId: this.getTaskProjectId(pendingTask.task)
+      };
+    }
+
+    if (pendingTask.forceInsertNext) {
+      const targetIdx = state.currentIndex === 0 && state.steps.length > 0 && !state.isRunning && state.currentTime === 0 
+                      ? 0 
+                      : state.currentIndex + 1;
+      state.steps.splice(targetIdx, 0, newStep);
+    } else if (pendingTask.targetIdx !== undefined) {
+      state.steps.splice(pendingTask.targetIdx, 0, newStep);
+    } else if (pendingTask.position === 'top') {
+      const insertIdx = state.isRunning || (state.currentTime > 0) ? state.currentIndex + 1 : 0;
+      state.steps.splice(insertIdx, 0, newStep);
+    } else {
+      // position 'bottom' or default
+      state.steps.push(newStep);
+    }
+
+    if (state.steps.length === 1) {
+       state.currentTime = durSec;
+       state.currentIndex = 0;
+    }
+    
+    this.renderSequence();
+    this.updateTimerView();
+    this.closeModal();
+    persistence.save();
+    pendingTask = null;
+  },
+
+  removeStep(idx) {
+    state.steps.splice(idx, 1);
+    if (state.currentIndex >= state.steps.length) {
+      state.currentIndex = Math.max(0, state.steps.length - 1);
+      state.currentTime = state.steps[state.currentIndex] ? state.steps[state.currentIndex].duration : 0;
+    }
+    this.renderSequence();
+    this.updateTimerView();
+    persistence.save();
+  },
+
+  filterTasks(type, val) {
+    this.renderTasks(type, val);
+  },
+
+  playBeep() {
+    const audio = document.getElementById('audio-beep');
+    audio.currentTime = 0;
+    audio.play().catch(e => console.warn("Beep failed: ", e));
+  }
+};
+
+// ── PERSISTENCE ──────────────────────────────────────────────────────────────
+const persistence = {
+  save() {
+    if (typeof PluginAPI === 'undefined') return;
+    const dataToSave = {
+      steps: state.steps,
+      currentIndex: state.currentIndex,
+      currentTime: state.currentTime,
+      isRunning: state.isRunning,
+      loopInfinite: state.loopInfinite,
+      lastUpdate: Date.now()
+    };
+    CombinedStore.saveChrono(dataToSave).catch(e => console.error("Save failed", e));
+  },
+
+  async load() {
+    if (typeof PluginAPI === 'undefined') return;
+    try {
+      const d = await CombinedStore.loadChrono();
+      if (d) {
+        state.steps = d.steps || [];
+        state.currentIndex = d.currentIndex || 0;
+        state.currentTime = d.currentTime || 0;
+        state.isRunning = d.isRunning || false;
+        state.loopInfinite = d.loopInfinite || false;
+        const loopEl = document.getElementById('loop-infinite');
+        if (loopEl) loopEl.checked = state.loopInfinite;
+        
+        // Handle time elapsed while app was closed
+        if (state.isRunning && d.lastUpdate) {
+          const elapsed = Math.floor((Date.now() - d.lastUpdate) / 1000);
+          this.catchup(elapsed);
+        }
+      }
+    } catch(e) {
+      console.error("Load failed", e);
+    }
+  },
+
+  catchup(elapsed) {
+    while (elapsed > 0 && state.steps.length > 0) {
+      if (elapsed < state.currentTime) {
+        state.currentTime -= elapsed;
+        elapsed = 0;
+      } else {
+        elapsed -= state.currentTime;
+        if (state.currentIndex < state.steps.length - 1) {
+          state.currentIndex++;
+          state.currentTime = state.steps[state.currentIndex].duration;
+        } else if (state.loopInfinite) {
+          state.currentIndex = 0;
+          state.currentTime = state.steps[0].duration;
+        } else {
+          state.currentTime = 0;
+          state.isRunning = false;
+          elapsed = 0;
+        }
+      }
+    }
+    if (state.isRunning) timer.start(true);
+  }
+};
+
+// ── INITIALIZATION ───────────────────────────────────────────────────────────
+async function init() {
+  if (typeof PluginAPI === 'undefined') {
+    setTimeout(init, 100);
+    return;
+  }
+
+  // Load context from SP
+  var taskContext = await CombinedTaskContext.load();
+  allTasks = taskContext.tasks;
+  allProjects = taskContext.projects;
+  allTags = taskContext.tags;
+
+  // Load plugin state
+  await persistence.load();
+  ui.enrichStepColors();
+
+  // Initial render
+  ui.renderTasks('today');
+  ui.renderTasks('all');
+  ui.renderSequence();
+  ui.updateTimerView();
+
+  // Listen for updates from SP globally
+  
+
+  // Listen for SP Actions from plugin.js
+  window.addEventListener('message', (e) => {
+    if (e.data && e.data.type === 'SP_ACTION') {
+      const action = e.data.action;
+      if (action.type === '[Task] SetCurrentTask') {
+        const spTaskId = action.id;
+        if (spTaskId === null && state.isRunning) {
+          // User paused the timer in SP directly
+          timer.pause(true); // pause silently
+        } else if (spTaskId && !state.isRunning) {
+          const currentStep = state.steps[state.currentIndex];
+          const matchesStep = currentStep && (
+            currentStep.taskId === spTaskId ||
+            (currentStep.taskId.startsWith('custom_') && autreTaskId === spTaskId)
+          );
+          if (matchesStep) {
+            timer.start(true);
+          }
+        }
+      } else if (action.type === '[Task] Toggle start') {
+         // User clicked the global toggle button in SP
+         // Toggle Chrono if the current step task ID matches the currently active SP task
+         // We can be dumb here: if Chrono is running, toggle means pause
+         if (state.isRunning) {
+            timer.pause(true);
+         }
+      }
+    }
+  });
+
+  // Handle hotkeys
+  window.addEventListener('keydown', (e) => {
+    if (e.target.tagName === 'INPUT') return;
+    if (e.code === 'Space') { e.preventDefault(); timer.toggle(); }
+    if (e.code === 'ArrowRight') timer.next();
+    if (e.code === 'ArrowLeft') timer.prev();
+  });
+}
+
+CombinedRuntime.ready(init);window.ui=ui;window.timer=timer;window.adjustTime=adjustTime;window.persistence=persistence;window.refreshChronoTasks=async function(){var taskContext=await CombinedTaskContext.load();allTasks=taskContext.tasks;allProjects=taskContext.projects;allTags=taskContext.tags};timer.replaceSequenceFromPeriod=function(steps){this.pause(true);state.steps=Array.isArray(steps)?steps.slice():[];state.currentIndex=0;state.currentTime=state.steps[0]?state.steps[0].duration:0;state.isRunning=false;ui.enrichStepColors();ui.renderSequence();ui.updateTimerView();persistence.save()};if(window.ChronoBridge._queue){timer.replaceSequenceFromPeriod(window.ChronoBridge._queue);window.ChronoBridge._queue=null}
+})();
+CombinedRuntime.ready(function(){if(!PluginAPI.registerHook||!PluginAPI.Hooks.PERSISTED_DATA_CHANGED)return;PluginAPI.registerHook(PluginAPI.Hooks.PERSISTED_DATA_CHANGED,async function(){try{await CombinedStore.reload();await CombinedTaskContext.refresh();if(typeof loadDataFromStore==='function'){await loadDataFromStore();await loadTasks();updateDateSelector();refreshCurrentTab()}if(window.persistence&&window.ui){await window.refreshChronoTasks();await window.persistence.load();window.ui.enrichStepColors();window.ui.renderTasks('today');window.ui.renderTasks('all');window.ui.renderSequence();window.ui.updateTimerView()}}catch(e){console.error('Combined data refresh failed:',e)}})});
+window.AppShell={view:"periode",switchTo:function(view){if(view!=="periode"&&view!=="chrono")return;this.view=view;document.getElementById("view-periode").classList.toggle("is-active",view==="periode");document.getElementById("view-chrono").classList.toggle("is-active",view==="chrono");document.querySelectorAll("#app-switcher .shell-tab").forEach(function(b){b.classList.toggle("is-active",b.getAttribute("data-view")===view)});try{localStorage.setItem("pc_active_view",view)}catch(e){}}};try{AppShell.switchTo(localStorage.getItem("pc_active_view")||"periode")}catch(e){}</script></body></html>
